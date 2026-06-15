@@ -39,12 +39,12 @@ Open `http://localhost:5173` in browser.
 ## API Key
 
 Set in `backend/.env`:
-
+ 
 ```
 GEMINI_API_KEY=your_key_here
 ```
-
-No key needed for testing — automatically uses mock data from SQLite database (cities: Tokyo, Kyoto, New York, Paris, Goa).
+ 
+No key needed for testing — automatically uses mock data from SQLite database (cities: Tokyo, Kyoto, New York, Paris, Goa). If a city is not in the list, budget verification and itinerary generation dynamically query the Gemini API (falling back to default templates if the API is offline/keyless).
 
 ## API Endpoints
 
