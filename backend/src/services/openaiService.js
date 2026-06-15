@@ -84,7 +84,7 @@ You MUST return the response strictly as a clean JSON object. Do not include mar
 `;
 
   try {
-    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
 
     const result = await model.generateContent(prompt);
     const response = result.response;
@@ -97,7 +97,7 @@ You MUST return the response strictly as a clean JSON object. Do not include mar
       console.log('Rate limited. Waiting 10s then retrying once...');
       await new Promise(r => setTimeout(r, 10000));
       try {
-        const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+        const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
         const result = await model.generateContent(prompt);
         const response = result.response;
         const text = response.text().trim();
@@ -115,13 +115,13 @@ You MUST return the response strictly as a clean JSON object. Do not include mar
 async function generateMockItinerary(tripData) {
   return new Promise((resolve, reject) => {
     const dest = tripData.destination;
-    let searchCity = 'Tokyo';
+    let searchCity = dest.trim().replace(/\b\w/g, c => c.toUpperCase());
     const destLower = dest.toLowerCase();
-    if (destLower.includes('kyoto')) searchCity = 'Kyoto';
+    if (destLower.includes('tokyo') || destLower.includes('japan')) searchCity = 'Tokyo';
+    else if (destLower.includes('kyoto')) searchCity = 'Kyoto';
     else if (destLower.includes('york') || destLower.includes('ny')) searchCity = 'New York';
     else if (destLower.includes('paris')) searchCity = 'Paris';
     else if (destLower.includes('goa')) searchCity = 'Goa';
-    else if (destLower.includes('japan')) searchCity = 'Tokyo';
 
     db.all('SELECT * FROM hotels WHERE city = ?', [searchCity], (err, dbHotels) => {
       if (err) return reject(err);
@@ -235,6 +235,34 @@ async function generateMockItinerary(tripData) {
   });
 }
 
+async function estimateBudgetWithAI(destination) {
+  if (!hasValidKey) {
+    return null;
+  }
+  const prompt = `
+You are a travel budget expert. Estimate the average travel costs for: "${destination}" in Indian Rupees (INR).
+We need average estimates per day/night for standard comfortable travel.
+You MUST return the response strictly as a clean JSON object. Do not include markdown code block formatting (like \`\`\`json). The JSON must match this structure exactly:
+{
+  "hotel": 3000,
+  "food": 1500,
+  "activities": 1500
+}
+`;
+  try {
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.5-flash' });
+    const result = await model.generateContent(prompt);
+    const text = result.response.text().trim();
+    const cleanJson = text.replace(/^```json\s*|```$/g, '');
+    return JSON.parse(cleanJson);
+  } catch (error) {
+    console.error('Error estimating budget with Gemini:', error.message);
+    return null;
+  }
+}
+
 module.exports = {
-  generateItineraryWithAI
+  generateItineraryWithAI,
+  estimateBudgetWithAI
 };
+

@@ -1,3 +1,5 @@
+const openaiService = require('./openaiService');
+
 const DESTINATION_COSTS = {
   "tokyo": { hotel: 4000, food: 2000, activities: 2000 },
   "kyoto": { hotel: 3000, food: 1500, activities: 1500 },
@@ -7,9 +9,18 @@ const DESTINATION_COSTS = {
   "japan": { hotel: 4000, food: 2000, activities: 2000 } // fallback for country-level input
 };
 
-function estimateBudget(destination, durationDays, travelers) {
+async function estimateBudget(destination, durationDays, travelers) {
   const destClean = (destination || "").toLowerCase().trim();
-  const costs = DESTINATION_COSTS[destClean] || { hotel: 3000, food: 1500, activities: 1500 };
+  let costs = DESTINATION_COSTS[destClean];
+  
+  if (!costs) {
+    const aiCosts = await openaiService.estimateBudgetWithAI(destination);
+    if (aiCosts && typeof aiCosts.hotel === 'number' && typeof aiCosts.food === 'number' && typeof aiCosts.activities === 'number') {
+      costs = aiCosts;
+    } else {
+      costs = { hotel: 3000, food: 1500, activities: 1500 };
+    }
+  }
   
   const dailyCost = (costs.hotel + costs.food + costs.activities) * travelers;
   const tripCost = dailyCost * durationDays;

@@ -61,7 +61,7 @@ export default function BudgetValidatorModal({
 
           <div style={{
             height: 8, borderRadius: 4, overflow: 'hidden',
-            background: 'linear-gradient(90deg, #34d399 0%, #f59e0b 50%, #f87171 100%)',
+            background: 'linear-gradient(90deg, #f87171 0%, #f59e0b 50%, #34d399 100%)',
             position: 'relative',
           }}>
             <div style={{
