@@ -1,4 +1,4 @@
-const openaiService = require('./openaiService');
+const geminiService = require('./geminiService');
 const budgetService = require('./budgetService');
 
 async function generateItinerary(tripData) {
@@ -31,8 +31,8 @@ async function generateItinerary(tripData) {
     duration_days: diffDays
   };
 
-  // Generate itinerary using OpenAI (with database mock fallback)
-  const aiResponse = await openaiService.generateItineraryWithAI(tripWithDuration);
+  // Generate itinerary using Gemini (with database mock fallback)
+  const aiResponse = await geminiService.generateItineraryWithAI(tripWithDuration);
 
   // Return complete response object
   return {

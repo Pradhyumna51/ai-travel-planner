@@ -1,4 +1,4 @@
-const openaiService = require('./openaiService');
+const geminiService = require('./geminiService');
 
 const DESTINATION_COSTS = {
   "tokyo": { hotel: 4000, food: 2000, activities: 2000 },
@@ -14,7 +14,7 @@ async function estimateBudget(destination, durationDays, travelers) {
   let costs = DESTINATION_COSTS[destClean];
   
   if (!costs) {
-    const aiCosts = await openaiService.estimateBudgetWithAI(destination);
+    const aiCosts = await geminiService.estimateBudgetWithAI(destination);
     if (aiCosts && typeof aiCosts.hotel === 'number' && typeof aiCosts.food === 'number' && typeof aiCosts.activities === 'number') {
       costs = aiCosts;
     } else {

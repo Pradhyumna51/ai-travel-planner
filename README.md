@@ -64,7 +64,7 @@ travel-planner/
 │   ├── src/
 │   │   ├── server.js
 │   │   ├── controllers/tripController.js
-│   │   ├── services/openaiService.js    ← Gemini integration
+│   │   ├── services/geminiService.js    ← Gemini integration
 │   │   ├── services/budgetService.js
 │   │   ├── services/itineraryService.js
 │   │   └── database/db.js
