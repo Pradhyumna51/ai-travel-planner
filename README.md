@@ -2,7 +2,6 @@
 
 Dark-themed travel itinerary generator. Enter trip details, get a complete day-by-day plan with hotels, transport, and budget breakdown.
 
-![Dark mode UI](screenshot.png)
 
 ## Tech Stack
 
