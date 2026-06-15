@@ -4,3 +4,5 @@ dist/
 *.db
 .env
 *.log
+.agents/
+skills-lock.json
