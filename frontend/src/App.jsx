@@ -3,7 +3,8 @@ import TripPlanningForm from './components/TripForm';
 import LoadingSpinner from './components/LoadingSpinner';
 import BudgetValidatorModal from './components/BudgetValidator';
 import ItineraryResults from './components/ItineraryResults';
-import { validateBudget, generateItinerary } from './services/api';
+import SavedJourneys from './components/SavedJourneys';
+import { validateBudget, generateItinerary, getTripDetails } from './services/api';
 
 const TIMEOUT_MS = 60_000;
 
@@ -89,10 +90,23 @@ export default function App() {
     if (pendingTrip) handleFormSubmit(pendingTrip);
   }, [pendingTrip, handleFormSubmit]);
 
+  const handleSelectSavedTrip = useCallback(async (id) => {
+    setStep('loading');
+    setApiError('');
+    try {
+      const data = await getTripDetails(id);
+      setResults(data);
+      setStep('results');
+    } catch (err) {
+      setStep('saved-list');
+      setApiError(friendlyError(err));
+    }
+  }, []);
+
   return (
     <div style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
       {/* ── Nav ── */}
-      <header style={{
+      <header className="no-print" style={{
         background: 'var(--color-surface)',
         borderBottom: '1px solid var(--color-border)',
         position: 'sticky', top: 0, zIndex: 50,
@@ -114,11 +128,24 @@ export default function App() {
             }} />
           </div>
 
-          {step === 'results' && (
-            <button onClick={handleReset} className="btn-ghost" style={{ fontSize: 12 }}>
-              ← New Journey
+          <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+            <button onClick={handleReset} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontSize: 13, fontWeight: (step === 'form' || step === 'loading' || (step === 'results' && (!results || !results.trip || !results.trip.id))) ? 600 : 400,
+              color: (step === 'form' || step === 'loading' || (step === 'results' && (!results || !results.trip || !results.trip.id))) ? 'var(--color-teal)' : 'var(--color-text-secondary)',
+              fontFamily: 'var(--font-sans)',
+            }}>
+              Plan Journey
             </button>
-          )}
+            <button onClick={() => { setStep('saved-list'); setResults(null); }} style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontSize: 13, fontWeight: (step === 'saved-list' || (step === 'results' && results && results.trip && results.trip.id)) ? 600 : 400,
+              color: (step === 'saved-list' || (step === 'results' && results && results.trip && results.trip.id)) ? 'var(--color-teal)' : 'var(--color-text-secondary)',
+              fontFamily: 'var(--font-sans)',
+            }}>
+              Saved Journeys
+            </button>
+          </div>
         </div>
       </header>
 
@@ -150,6 +177,10 @@ export default function App() {
 
         {step === 'results' && results && (
           <ItineraryResults results={results} onReset={handleReset} />
+        )}
+
+        {step === 'saved-list' && (
+          <SavedJourneys onSelect={handleSelectSavedTrip} />
         )}
       </main>
 

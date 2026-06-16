@@ -165,8 +165,142 @@ async function saveTrip(req, res, next) {
   }
 }
 
+async function getSavedTrips(req, res, next) {
+  try {
+    const query = `
+      SELECT id, origin, destination, start_date, end_date, duration_days, budget, travelers, interests, created_at
+      FROM trips
+      ORDER BY created_at DESC
+    `;
+    db.all(query, [], (err, rows) => {
+      if (err) {
+        return next(err);
+      }
+      const parsedRows = rows.map(row => ({
+        ...row,
+        interests: JSON.parse(row.interests || '[]')
+      }));
+      return res.status(200).json(parsedRows);
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getTripDetails(req, res, next) {
+  try {
+    const tripId = parseInt(req.params.id);
+    if (isNaN(tripId)) {
+      return res.status(400).json({ error: 'Invalid trip ID' });
+    }
+
+    db.get('SELECT * FROM trips WHERE id = ?', [tripId], (err, trip) => {
+      if (err) return next(err);
+      if (!trip) return res.status(404).json({ error: 'Trip not found' });
+
+      db.all('SELECT * FROM itineraries WHERE trip_id = ? ORDER BY day_number ASC', [tripId], (err, itinRows) => {
+        if (err) return next(err);
+
+        const parsedTrip = {
+          ...trip,
+          interests: JSON.parse(trip.interests || '[]')
+        };
+
+        const parsedItinerary = itinRows.map(day => ({
+          day: day.day_number,
+          city: day.city,
+          title: day.title,
+          morning: day.morning_activity,
+          afternoon: day.afternoon_activity,
+          evening: day.evening_activity,
+          estimated_cost: day.estimated_cost
+        }));
+
+        const dest = parsedTrip.destination;
+        let searchCity = dest.trim().replace(/\b\w/g, c => c.toUpperCase());
+        const destLower = dest.toLowerCase();
+        if (destLower.includes('tokyo') || destLower.includes('japan')) searchCity = 'Tokyo';
+        else if (destLower.includes('kyoto')) searchCity = 'Kyoto';
+        else if (destLower.includes('york') || destLower.includes('ny')) searchCity = 'New York';
+        else if (destLower.includes('paris')) searchCity = 'Paris';
+        else if (destLower.includes('goa')) searchCity = 'Goa';
+
+        db.all('SELECT * FROM hotels WHERE city = ?', [searchCity], (err, dbHotels) => {
+          if (err) return next(err);
+
+          const hotels = dbHotels.length > 0 ? dbHotels.map(h => ({
+            city: h.city,
+            name: h.name,
+            rating: h.rating,
+            price_per_night: h.price_per_night,
+            amenities: JSON.parse(h.amenities || '[]'),
+            booking_url: h.booking_url || 'https://www.booking.com'
+          })) : [
+            { city: searchCity, name: 'Default Grand Hotel', rating: 4.2, price_per_night: 5000, amenities: ['WiFi', 'Pool'], booking_url: 'https://www.booking.com' }
+          ];
+
+          const transportation = [];
+          if (searchCity !== parsedTrip.origin) {
+            transportation.push({
+              from: parsedTrip.origin,
+              to: searchCity,
+              mode: 'Flight',
+              duration: '6h 30m',
+              cost: Math.round(30000 * parsedTrip.travelers),
+              booking_url: 'https://www.google.com/travel/flights'
+            });
+            if (searchCity === 'Kyoto' && parsedTrip.origin.toLowerCase().includes('tokyo')) {
+              transportation[0] = {
+                from: 'Tokyo',
+                to: 'Kyoto',
+                mode: 'Train',
+                duration: '2h 15m',
+                cost: Math.round(15000 * parsedTrip.travelers),
+                booking_url: 'https://www.shinkansen.com'
+              };
+            }
+          }
+
+          const flightCost = transportation.find(t => t.mode === 'Flight')?.cost || 0;
+          const trainCost = transportation.find(t => t.mode === 'Train')?.cost || 0;
+          const transitCost = trainCost || (parsedTrip.duration_days * 800 * parsedTrip.travelers);
+          const avgHotelPrice = hotels[0]?.price_per_night || 5000;
+          const lodgingCost = avgHotelPrice * parsedTrip.duration_days * parsedTrip.travelers;
+          const foodCost = parsedTrip.duration_days * 1500 * parsedTrip.travelers;
+          const activitiesCost = parsedItinerary.reduce((sum, day) => sum + (day.estimated_cost || 0), 0);
+          const subtotal = flightCost + transitCost + lodgingCost + foodCost + activitiesCost;
+          const contingencyCost = Math.round(subtotal * 0.1);
+          const total = subtotal + contingencyCost;
+
+          const budget_breakdown = {
+            flights: flightCost,
+            hotels: lodgingCost,
+            food: foodCost,
+            transport: transitCost,
+            activities: activitiesCost,
+            contingency: contingencyCost,
+            total: total
+          };
+
+          return res.status(200).json({
+            trip: parsedTrip,
+            itinerary: parsedItinerary,
+            hotels: hotels.slice(0, 4),
+            transportation,
+            budget_breakdown
+          });
+        });
+      });
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   validateBudget,
   generateItinerary,
-  saveTrip
+  saveTrip,
+  getSavedTrips,
+  getTripDetails
 };

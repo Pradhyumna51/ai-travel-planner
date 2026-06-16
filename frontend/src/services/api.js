@@ -29,6 +29,16 @@ export const saveTrip = async (tripAndItinerary) => {
   return response.data;
 };
 
+export const getSavedTrips = async () => {
+  const response = await apiClient.get('/trips');
+  return response.data;
+};
+
+export const getTripDetails = async (id) => {
+  const response = await apiClient.get(`/trips/${id}`);
+  return response.data;
+};
+
 export const getHealth = async () => {
   const response = await apiClient.get('/health');
   return response.data;

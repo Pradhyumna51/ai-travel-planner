@@ -233,9 +233,9 @@ function TransportCard({ route }) {
 /* ── Main ─────────────────────────────────── */
 export default function ItineraryResults({ results, onReset }) {
   const { trip, itinerary = [], hotels = [], transportation = [], budget_breakdown } = results;
-  const [saveState, setSaveState] = useState('idle');
+  const [saveState, setSaveState] = useState(trip && trip.id ? 'saved' : 'idle');
   const [saveError, setSaveError] = useState('');
-  const [savedTripId, setSavedTripId] = useState(null);
+  const [savedTripId, setSavedTripId] = useState(trip && trip.id ? trip.id : null);
   const cityGroups = useMemo(() => groupDaysByCity(itinerary), [itinerary]);
 
   const handleSave = useCallback(async () => {
@@ -291,7 +291,7 @@ export default function ItineraryResults({ results, onReset }) {
           </div>
 
           {/* Actions */}
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className="no-print" style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
             <button onClick={onReset} className="btn-ghost">← New Journey</button>
             {saveState === 'error' && (
               <span style={{ fontSize: 12, color: 'var(--color-danger)' }}>{saveError}</span>
@@ -302,12 +302,15 @@ export default function ItineraryResults({ results, onReset }) {
               style={{ minWidth: 110 }}>
               {saveState === 'saved' ? '✓ Saved' : saveState === 'saving' ? 'Saving…' : 'Save Journey'}
             </button>
+            <button onClick={() => window.print()} className="btn-amber" style={{ padding: '8px 14px', fontSize: 13 }}>
+              Download PDF
+            </button>
           </div>
         </div>
       </div>
 
       {saveState === 'saved' && (
-        <div style={{
+        <div className="no-print" style={{
           background: 'var(--color-teal-dim)',
           border: '1px solid var(--color-teal)',
           borderRadius: 6,

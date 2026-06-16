@@ -368,3 +368,31 @@
   .mono-sm { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-dim); }
   .mono-cost { font-family: var(--font-mono); font-weight: 700; }
 }
+
+/* ── Print Styles ────────────────────────────── */
+@media print {
+  body, html {
+    background: #0B0F14 !important;
+    color: #e2e8f0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  .no-print {
+    display: none !important;
+  }
+
+  .day-card, .hotel-card, .transport-card, .city-header, .badge, .hotel-card > div:first-child {
+    background: #111827 !important;
+    border-color: #1e293b !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
