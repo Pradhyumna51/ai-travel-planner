@@ -235,13 +235,15 @@ export default function ItineraryResults({ results, onReset }) {
   const { trip, itinerary = [], hotels = [], transportation = [], budget_breakdown } = results;
   const [saveState, setSaveState] = useState('idle');
   const [saveError, setSaveError] = useState('');
+  const [savedTripId, setSavedTripId] = useState(null);
   const cityGroups = useMemo(() => groupDaysByCity(itinerary), [itinerary]);
 
   const handleSave = useCallback(async () => {
     setSaveState('saving');
     setSaveError('');
     try {
-      await saveTrip({ trip, itinerary });
+      const resData = await saveTrip({ trip, itinerary });
+      setSavedTripId(resData.tripId);
       setSaveState('saved');
     } catch (err) {
       setSaveState('error');
@@ -303,6 +305,25 @@ export default function ItineraryResults({ results, onReset }) {
           </div>
         </div>
       </div>
+
+      {saveState === 'saved' && (
+        <div style={{
+          background: 'var(--color-teal-dim)',
+          border: '1px solid var(--color-teal)',
+          borderRadius: 6,
+          padding: '12px 16px',
+          marginBottom: 24,
+          color: 'var(--color-text)',
+          fontSize: 14,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          animation: 'fade-in 200ms ease-out'
+        }}>
+          <span style={{ color: 'var(--color-teal)', fontWeight: 'bold' }}>✓</span>
+          <span>Journey saved successfully to database! (Trip ID: {savedTripId})</span>
+        </div>
+      )}
 
       {/* ── Two-column layout ── */}
       <div style={{
