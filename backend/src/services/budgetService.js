@@ -9,13 +9,13 @@ const DESTINATION_COSTS = {
   "japan": { hotel: 4000, food: 2000, activities: 2000 } // fallback for country-level input
 };
 
-async function estimateBudget(destination, durationDays, travelers, startDate, endDate) {
+async function estimateBudget(destination, durationDays, travelers, startDate, endDate, travelStyle = 'standard') {
   const destClean = (destination || "").toLowerCase().trim();
   let costs = null;
   let dynamicTransport = null;
 
-  // Always attempt dynamic AI estimation to capture season, travel costs, trends
-  const aiCosts = await geminiService.estimateBudgetWithAI(destination, travelers, durationDays, startDate, endDate);
+  // Always attempt dynamic AI estimation to capture season, travel costs, trends, and travel style
+  const aiCosts = await geminiService.estimateBudgetWithAI(destination, travelers, durationDays, startDate, endDate, travelStyle);
   if (aiCosts && typeof aiCosts.hotel === 'number' && typeof aiCosts.food === 'number' && typeof aiCosts.activities === 'number') {
     costs = aiCosts;
     dynamicTransport = aiCosts.transport;
@@ -23,7 +23,33 @@ async function estimateBudget(destination, durationDays, travelers, startDate, e
 
   // Fallback to local DB costs if AI is offline
   if (!costs) {
-    costs = DESTINATION_COSTS[destClean] || { hotel: 3000, food: 1500, activities: 1500 };
+    const foreignDestinations = ["tokyo", "kyoto", "new york", "paris", "japan", "usa", "france", "london", "europe", "uk", "america", "ny"];
+    const isForeign = foreignDestinations.some(f => destClean.includes(f));
+
+    let baseCosts;
+    if (isForeign) {
+      baseCosts = DESTINATION_COSTS[destClean] || { hotel: 4000, food: 2000, activities: 2000 };
+    } else {
+      // Domestic Indian/local defaults (much lower cost)
+      baseCosts = DESTINATION_COSTS[destClean] || { hotel: 1200, food: 600, activities: 500 };
+    }
+
+    // Apply multipliers based on style
+    let styleMultiplier = { hotel: 1.0, food: 1.0, activities: 1.0, transport: 1.0 };
+    if (travelStyle === 'budget') {
+      styleMultiplier = { hotel: 0.4, food: 0.6, activities: 0.5, transport: 0.5 };
+    } else if (travelStyle === 'luxury') {
+      styleMultiplier = { hotel: 2.5, food: 2.0, activities: 2.0, transport: 1.8 };
+    }
+
+    costs = {
+      hotel: baseCosts.hotel * styleMultiplier.hotel,
+      food: baseCosts.food * styleMultiplier.food,
+      activities: baseCosts.activities * styleMultiplier.activities
+    };
+
+    const baseTransportPerDay = isForeign ? 1500 : 800;
+    dynamicTransport = durationDays * baseTransportPerDay * travelers * styleMultiplier.transport;
   }
 
   // Double room sharing logic: 1 room for every 2 travelers
@@ -32,7 +58,7 @@ async function estimateBudget(destination, durationDays, travelers, startDate, e
   const foodCost = costs.food * travelers * durationDays;
   const activitiesCost = costs.activities * travelers * durationDays;
 
-  // Use dynamic transport if provided by Gemini, else fallback to 1500 per traveler per day
+  // Use dynamic transport if provided by Gemini, else fallback
   const transportCost = (typeof dynamicTransport === 'number') ? dynamicTransport : (durationDays * 1500 * travelers);
 
   const subtotal = lodgingCost + foodCost + activitiesCost + transportCost;

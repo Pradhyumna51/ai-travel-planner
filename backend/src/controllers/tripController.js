@@ -6,7 +6,7 @@ const db = require('../database/db');
 
 async function validateBudget(req, res, next) {
   try {
-    const { destination, travelers, budget, duration_days, start_date, end_date } = req.body;
+    const { destination, travelers, budget, duration_days, start_date, end_date, travel_style } = req.body;
 
     if (!destination) {
       return res.status(400).json({ error: 'Destination required' });
@@ -32,7 +32,7 @@ async function validateBudget(req, res, next) {
       return res.status(400).json({ error: 'Valid trip duration is required' });
     }
 
-    const estimate = await budgetService.estimateBudget(destination, duration, parseInt(travelers), start_date, end_date);
+    const estimate = await budgetService.estimateBudget(destination, duration, parseInt(travelers), start_date, end_date, travel_style);
     const isBudgetValid = budget >= estimate.low;
 
     let message = 'Your budget is sufficient for this trip.';
@@ -59,7 +59,7 @@ async function validateBudget(req, res, next) {
 
 async function generateItinerary(req, res, next) {
   try {
-    const { origin, destination, start_date, end_date, budget, travelers, interests } = req.body;
+    const { origin, destination, start_date, end_date, budget, travelers, interests, travel_style } = req.body;
 
     // Validation
     if (!origin) return res.status(400).json({ error: 'Origin city is required' });
@@ -84,7 +84,8 @@ async function generateItinerary(req, res, next) {
       end_date,
       budget: parseInt(budget),
       travelers: parseInt(travelers),
-      interests
+      interests,
+      travel_style
     });
 
     return res.status(200).json(response);
@@ -103,11 +104,12 @@ async function saveTrip(req, res, next) {
 
     // Insert into trips table
     const tripQuery = `
-      INSERT INTO trips (user_id, origin, destination, start_date, end_date, duration_days, budget, travelers, interests)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO trips (user_id, origin, destination, start_date, end_date, duration_days, budget, travelers, interests, travel_style)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const userId = trip.user_id || null;
     const interestsJson = JSON.stringify(trip.interests || []);
+    const travelStyle = trip.travel_style || 'standard';
 
     db.run(
       tripQuery,
@@ -120,7 +122,8 @@ async function saveTrip(req, res, next) {
         trip.duration_days,
         trip.budget,
         trip.travelers,
-        interestsJson
+        interestsJson,
+        travelStyle
       ],
       function (err) {
         if (err) {
@@ -178,7 +181,7 @@ async function saveTrip(req, res, next) {
 async function getSavedTrips(req, res, next) {
   try {
     const query = `
-      SELECT id, origin, destination, start_date, end_date, duration_days, budget, travelers, interests, created_at
+      SELECT id, origin, destination, start_date, end_date, duration_days, budget, travelers, interests, travel_style, created_at
       FROM trips
       ORDER BY created_at DESC
     `;

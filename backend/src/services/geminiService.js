@@ -25,6 +25,12 @@ Trip Details:
 - Budget: ₹${tripData.budget}
 - Travelers: ${tripData.travelers}
 - Interests: ${tripData.interests.join(', ')}
+- Travel Style: ${tripData.travel_style || 'standard'} (options: budget, standard, luxury)
+
+Tailor the generated itinerary, hotel recommendations, activities, and budget breakdown strictly to the requested Travel Style:
+- "budget": Recommend extremely affordable hotels/hostels/guesthouses, local cheap eats/street food, public transit/trains, and low-cost/free sightseeing. Keep the total budget breakdown minimal.
+- "luxury": Recommend high-end 5-star hotels/resorts, fine-dining, premium private tours/activities, and flights/private cabs. The budget breakdown should reflect premium luxury costs.
+- "standard": Recommend comfortable mid-range 3-star hotels, local restaurants, standard popular sights, and standard transport options.
 
 For each day, provide:
 1. City/Location
@@ -132,15 +138,20 @@ async function generateMockItinerary(tripData) {
       db.all('SELECT * FROM attractions WHERE city = ?', [searchCity], (err, dbAttractions) => {
         if (err) return reject(err);
 
+        const style = tripData.travel_style || 'standard';
+        let multiplier = 1.0;
+        if (style === 'budget') multiplier = 0.5;
+        else if (style === 'luxury') multiplier = 2.0;
+
         const hotels = dbHotels.length > 0 ? dbHotels.map(h => ({
           city: h.city,
           name: h.name,
           rating: h.rating,
-          price_per_night: h.price_per_night,
+          price_per_night: Math.round(h.price_per_night * multiplier),
           amenities: JSON.parse(h.amenities || '[]'),
           booking_url: h.booking_url || 'https://www.booking.com'
         })) : [
-          { city: searchCity, name: 'Default Grand Hotel', rating: 4.2, price_per_night: 5000, amenities: ['WiFi', 'Pool'], booking_url: 'https://www.booking.com' }
+          { city: searchCity, name: 'Default Grand Hotel', rating: 4.2, price_per_night: Math.round(5000 * multiplier), amenities: ['WiFi', 'Pool'], booking_url: 'https://www.booking.com' }
         ];
 
         const attractions = dbAttractions.length > 0 ? dbAttractions : [
@@ -167,7 +178,7 @@ async function generateMockItinerary(tripData) {
             eveningAttr = pool[(idxE + 1) % pool.length];
           }
 
-          const dailyCost = (morningAttr.estimated_cost || 0) + (afternoonAttr.estimated_cost || 0) + (eveningAttr.estimated_cost || 0) + 1500;
+          const dailyCost = Math.round(((morningAttr.estimated_cost || 0) + (afternoonAttr.estimated_cost || 0) + (eveningAttr.estimated_cost || 0) + 1500) * multiplier);
 
           itinerary.push({
             day: d,
@@ -185,13 +196,14 @@ async function generateMockItinerary(tripData) {
 
         const transportation = [];
         if (searchCity !== tripData.origin) {
+          const transMultiplier = style === 'budget' ? 0.4 : style === 'luxury' ? 1.8 : 1.0;
           transportation.push({
             from: tripData.origin,
             to: searchCity,
-            mode: 'Flight',
-            duration: '6h 30m',
-            cost: Math.round(30000 * tripData.travelers),
-            booking_url: 'https://www.google.com/travel/flights'
+            mode: style === 'budget' ? 'Train' : 'Flight',
+            duration: style === 'budget' ? '18h 30m' : '6h 30m',
+            cost: Math.round(30000 * tripData.travelers * transMultiplier),
+            booking_url: style === 'budget' ? 'https://www.irctc.co.in' : 'https://www.google.com/travel/flights'
           });
           if (searchCity === 'Kyoto' && tripData.origin.toLowerCase().includes('tokyo')) {
             transportation[0] = {
@@ -199,7 +211,7 @@ async function generateMockItinerary(tripData) {
               to: 'Kyoto',
               mode: 'Train',
               duration: '2h 15m',
-              cost: Math.round(15000 * tripData.travelers),
+              cost: Math.round(15000 * tripData.travelers * transMultiplier),
               booking_url: 'https://www.shinkansen.com'
             };
           }
@@ -241,7 +253,7 @@ async function generateMockItinerary(tripData) {
   });
 }
 
-async function estimateBudgetWithAI(destination, travelers, durationDays, startDate, endDate) {
+async function estimateBudgetWithAI(destination, travelers, durationDays, startDate, endDate, travelStyle = 'standard') {
   if (!hasValidKey) {
     return null;
   }
@@ -251,13 +263,19 @@ You are a travel budget expert. Estimate the average travel costs for:
 - Travelers: ${travelers}
 - Duration: ${durationDays} days
 - Date range: ${startDate || 'N/A'} to ${endDate || 'N/A'}
+- Travel Style: "${travelStyle}" (options: budget, standard, luxury)
+
+Adjust all costs to match the requested Travel Style:
+- "budget": lowest possible costs (backpacker hostels, street food, public transport/trains, free/cheap activities).
+- "standard": mid-range comfort (3-star hotels, casual restaurants, standard attractions, cabs/flights).
+- "luxury": high-end comfort (4/5-star luxury hotels, fine dining, premium private tours, flights/first-class transport).
 
 Consider the season/time of year (e.g. peak vs off-peak season for this destination), current real-world travel trends, flight/train fares, hotel rates, and daily food/activities costs.
-We need realistic estimates in Indian Rupees (INR) for standard comfortable travel.
+We need realistic estimates in Indian Rupees (INR).
 
 You MUST return the response strictly as a clean JSON object. Do not include markdown code block formatting (like \`\`\`json). The JSON must match this structure exactly:
 {
-  "hotel": 3000,          // Average nightly rate for 1 double room (or rooms needed for ${travelers} travelers)
+  "hotel": 3000,          // Average nightly rate for rooms needed for ${travelers} travelers
   "food": 1500,           // Daily food cost per person
   "activities": 1500,     // Daily activities/sightseeing cost per person
   "transport": 10000      // Total transport cost (flights/trains/local cabs) for ALL ${travelers} travelers for the entire trip duration

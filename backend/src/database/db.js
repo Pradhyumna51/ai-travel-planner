@@ -84,6 +84,20 @@ function initDb() {
       });
     });
 
+    db.all('PRAGMA table_info(trips)', (err, rows) => {
+      if (err) {
+        console.error('Error checking trips columns:', err);
+        return;
+      }
+      const columns = (rows || []).map(r => r.name);
+      if (!columns.includes('travel_style')) {
+        db.run("ALTER TABLE trips ADD COLUMN travel_style TEXT DEFAULT 'standard'", (err) => {
+          if (err) console.error("Error adding column travel_style to trips:", err.message);
+          else console.log("Added column travel_style to trips");
+        });
+      }
+    });
+
     seedData();
   });
 }

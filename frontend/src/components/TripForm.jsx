@@ -8,6 +8,7 @@ const INTERESTS = [
 const EMPTY = {
   origin: '', destination: '', start_date: '', end_date: '',
   budget: '', travelers: 1, interests: [],
+  travel_style: 'standard',
 };
 
 function validate(d) {
@@ -142,6 +143,40 @@ export default function TripPlanningForm({ onSubmit, isLoading, apiError, onRetr
           <Field id="travelers" label="Travelers" type="number" min="1" max="20"
             value={form.travelers} onChange={onChange} onBlur={onBlur}
             disabled={isLoading} error={err('travelers')} />
+        </div>
+
+        <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 24px' }} />
+
+        {/* Travel Style */}
+        <div style={{ marginBottom: 24 }}>
+          <label className="field-label">Travel Style</label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 4 }}>
+            {['budget', 'standard', 'luxury'].map(style => {
+              const isSelected = form.travel_style === style;
+              return (
+                <button
+                  key={style}
+                  type="button"
+                  onClick={() => setForm(p => ({ ...p, travel_style: style }))}
+                  disabled={isLoading}
+                  style={{
+                    padding: '8px 12px',
+                    borderRadius: 6,
+                    fontSize: 13,
+                    fontWeight: 600,
+                    textTransform: 'capitalize',
+                    border: isSelected ? '1px solid var(--color-teal)' : '1px solid var(--color-border-hover)',
+                    background: isSelected ? 'var(--color-teal-dim)' : 'transparent',
+                    color: isSelected ? 'var(--color-teal)' : 'var(--color-text-secondary)',
+                    cursor: 'pointer',
+                    transition: 'all 150ms'
+                  }}
+                >
+                  {style}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 24px' }} />

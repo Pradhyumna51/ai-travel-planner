@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS trips (
   budget INTEGER NOT NULL,
   travelers INTEGER NOT NULL,
   interests TEXT NOT NULL, -- JSON string: ["Food", "Photography"]
+  travel_style TEXT DEFAULT 'standard',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id)
