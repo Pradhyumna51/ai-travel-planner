@@ -28,6 +28,48 @@ export default function LoadingSpinner({ destination }) {
       justifyContent: 'center', padding: '100px 24px',
       animation: 'fade-in 400ms ease-out',
     }}>
+      {/* Animated SVG Path */}
+      <svg width="280" height="120" viewBox="0 0 280 120" style={{ marginBottom: 20 }}>
+        <defs>
+          <linearGradient id="route-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="var(--color-teal)" stopOpacity="0.2" />
+            <stop offset="50%" stopColor="var(--color-teal)" stopOpacity="1" />
+            <stop offset="100%" stopColor="var(--color-lavender)" stopOpacity="1" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M 30 90 C 90 20, 190 20, 250 90"
+          fill="none"
+          stroke="var(--color-border)"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        <path
+          d="M 30 90 C 90 20, 190 20, 250 90"
+          fill="none"
+          stroke="url(#route-grad)"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeDasharray="400"
+          strokeDashoffset="400"
+          style={{
+            animation: 'dash-path 4s ease-in-out infinite'
+          }}
+        />
+        <g>
+          <path
+            d="M-6,-6 L6,0 L-6,6 L-3,0 Z"
+            fill="var(--color-teal)"
+          />
+          <animateMotion
+            path="M 30 90 C 90 20, 190 20, 250 90"
+            dur="4s"
+            repeatCount="indefinite"
+            rotate="auto"
+          />
+        </g>
+      </svg>
+
       {/* Route line with nodes */}
       <div style={{ width: 320, marginBottom: 40, position: 'relative' }}>
         {/* Track */}

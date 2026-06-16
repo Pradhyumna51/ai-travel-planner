@@ -59,6 +59,11 @@
     0%, 100% { box-shadow: 0 0 0 0 var(--color-teal-dim); }
     50%      { box-shadow: 0 0 12px 4px var(--color-teal-dim); }
   }
+  @keyframes dash-path {
+    0% { stroke-dashoffset: 400; }
+    50% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -400; }
+  }
   @keyframes draw-line {
     from { width: 0; }
     to   { width: 100%; }
@@ -367,6 +372,25 @@
   .mono { font-family: var(--font-mono); }
   .mono-sm { font-family: var(--font-mono); font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--color-text-dim); }
   .mono-cost { font-family: var(--font-mono); font-weight: 700; }
+}
+
+/* ── Leaflet Polyline Animation & Scrollbars ── */
+.animated-route-line path {
+  stroke-dasharray: 6, 8;
+  animation: routeDashFlow 12s linear infinite;
+}
+@keyframes routeDashFlow {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* ── Print Styles ────────────────────────────── */

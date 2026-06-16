@@ -1,5 +1,8 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import axios from 'axios';
 import BudgetBreakdown from './BudgetBreakdown';
+import MapContainer from './MapContainer';
+import DaySidebar from './DaySidebar';
 import { saveTrip } from '../services/api';
 
 /* ── helpers ──────────────────────────────── */
@@ -238,6 +241,38 @@ export default function ItineraryResults({ results, onReset }) {
   const [savedTripId, setSavedTripId] = useState(trip && trip.id ? trip.id : null);
   const cityGroups = useMemo(() => groupDaysByCity(itinerary), [itinerary]);
 
+  const [activeTab, setActiveTab] = useState('timeline');
+  const [mapData, setMapData] = useState(null);
+  const [mapLoading, setMapLoading] = useState(false);
+  const [mapError, setMapError] = useState('');
+  const [selectedDay, setSelectedDay] = useState(1);
+  const [selectedAttraction, setSelectedAttraction] = useState(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'map' && !mapData && (savedTripId || trip?.id)) {
+      const idToFetch = savedTripId || trip.id;
+      setMapLoading(true);
+      setMapError('');
+      axios.get(`http://localhost:5000/api/trips/${idToFetch}/map-data`)
+        .then(res => {
+          setMapData(res.data);
+          setMapLoading(false);
+        })
+        .catch(err => {
+          console.error('Error fetching map data:', err);
+          setMapError('Failed to load map data. OSRM routing or database issue.');
+          setMapLoading(false);
+        });
+    }
+  }, [activeTab, savedTripId, trip?.id, mapData]);
+
   const handleSave = useCallback(async () => {
     setSaveState('saving');
     setSaveError('');
@@ -245,6 +280,7 @@ export default function ItineraryResults({ results, onReset }) {
       const resData = await saveTrip({ trip, itinerary });
       setSavedTripId(resData.tripId);
       setSaveState('saved');
+      setMapData(null); // Reset to force reload on switching to map tab
     } catch (err) {
       setSaveState('error');
       setSaveError(err.response?.data?.error || 'Save failed. Try again?');
@@ -309,6 +345,30 @@ export default function ItineraryResults({ results, onReset }) {
         </div>
       </div>
 
+      {/* Decorative Animated SVG Path in Header */}
+      <div style={{ position: 'relative', height: 40, width: '100%', overflow: 'hidden', marginBottom: -10 }}>
+        <svg width="100%" height="40" style={{ pointerEvents: 'none' }}>
+          <path
+            d="M 10,20 C 150,-10 300,50 450,20 C 600,-10 750,50 900,20 C 1050,-10 1200,50 1350,20"
+            fill="none"
+            stroke="var(--color-border)"
+            strokeWidth="1.5"
+            strokeDasharray="4, 6"
+          />
+          <path
+            d="M 10,20 C 150,-10 300,50 450,20 C 600,-10 750,50 900,20 C 1050,-10 1200,50 1350,20"
+            fill="none"
+            stroke="var(--color-teal)"
+            strokeWidth="1.5"
+            strokeDasharray="120"
+            strokeDashoffset="120"
+            style={{
+              animation: 'dash-path 15s linear infinite'
+            }}
+          />
+        </svg>
+      </div>
+
       {saveState === 'saved' && (
         <div className="no-print" style={{
           background: 'var(--color-teal-dim)',
@@ -328,64 +388,189 @@ export default function ItineraryResults({ results, onReset }) {
         </div>
       )}
 
-      {/* ── Two-column layout ── */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: '1fr 340px',
-        gap: 32, alignItems: 'start',
-      }}>
-        {/* LEFT: Timeline + hotels + transport */}
-        <div>
-          {/* Itinerary */}
-          <section style={{ marginBottom: 36 }}>
-            <p className="mono-sm" style={{ marginBottom: 16 }}>Itinerary</p>
-            {cityGroups.length > 0 ? (() => {
-              let ctr = 1;
-              return cityGroups.map((g, i) => {
-                const start = ctr;
-                ctr += g.days.length;
-                return <CityGroup key={`${g.city}-${i}`} city={g.city}
-                  days={g.days} startDay={start} defaultOpen={i === 0} />;
-              });
-            })() : (
-              <p style={{ color: 'var(--color-text-dim)', fontStyle: 'italic' }}>
-                No days generated.
-              </p>
-            )}
-          </section>
-
-          {/* Hotels */}
-          {hotels.length > 0 && (
-            <section style={{ marginBottom: 36 }}>
-              <p className="mono-sm" style={{ marginBottom: 16 }}>Accommodations</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {hotels.map((h, i) => <HotelCard key={i} hotel={h} />)}
-              </div>
-            </section>
-          )}
-
-          {/* Transport */}
-          {transportation.length > 0 && (
-            <section>
-              <p className="mono-sm" style={{ marginBottom: 16 }}>Routes</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {transportation.map((r, i) => <TransportCard key={i} route={r} />)}
-              </div>
-            </section>
-          )}
-        </div>
-
-        {/* RIGHT: Budget */}
-        <div style={{
-          position: 'sticky', top: 80,
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 8,
-          padding: 24,
-        }}>
-          <BudgetBreakdown breakdown={budget_breakdown} userBudget={trip.budget} />
-        </div>
+      {/* Tab Selector */}
+      <div className="no-print" style={{ display: 'flex', gap: 16, borderBottom: '1px solid var(--color-border)', marginBottom: 24 }}>
+        <button 
+          onClick={() => setActiveTab('timeline')}
+          style={{
+            background: 'none',
+            border: 'none',
+            borderBottom: activeTab === 'timeline' ? '2.5px solid var(--color-teal)' : '2.5px solid transparent',
+            color: activeTab === 'timeline' ? 'var(--color-teal)' : 'var(--color-text-secondary)',
+            padding: '10px 16px',
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontFamily: 'var(--font-mono)',
+            transition: 'all 200ms ease'
+          }}
+        >
+          🗂️ TIMELINE DETAILS
+        </button>
+        <button 
+          onClick={() => setActiveTab('map')}
+          style={{
+            background: 'none',
+            border: 'none',
+            borderBottom: activeTab === 'map' ? '2.5px solid var(--color-teal)' : '2.5px solid transparent',
+            color: activeTab === 'map' ? 'var(--color-teal)' : 'var(--color-text-secondary)',
+            padding: '10px 16px',
+            fontSize: 13,
+            fontWeight: 700,
+            cursor: 'pointer',
+            fontFamily: 'var(--font-mono)',
+            transition: 'all 200ms ease'
+          }}
+        >
+          🗺️ INTERACTIVE MAPS
+        </button>
       </div>
+
+      {activeTab === 'timeline' ? (
+        /* ── Two-column layout ── */
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 340px',
+          gap: 32, alignItems: 'start',
+        }}>
+          {/* LEFT: Timeline + hotels + transport */}
+          <div>
+            {/* Itinerary */}
+            <section style={{ marginBottom: 36 }}>
+              <p className="mono-sm" style={{ marginBottom: 16 }}>Itinerary</p>
+              {cityGroups.length > 0 ? (() => {
+                let ctr = 1;
+                return cityGroups.map((g, i) => {
+                  const start = ctr;
+                  ctr += g.days.length;
+                  return <CityGroup key={`${g.city}-${i}`} city={g.city}
+                    days={g.days} startDay={start} defaultOpen={i === 0} />;
+                });
+              })() : (
+                <p style={{ color: 'var(--color-text-dim)', fontStyle: 'italic' }}>
+                  No days generated.
+                </p>
+              )}
+            </section>
+
+            {/* Hotels */}
+            {hotels.length > 0 && (
+              <section style={{ marginBottom: 36 }}>
+                <p className="mono-sm" style={{ marginBottom: 16 }}>Accommodations</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  {hotels.map((h, i) => <HotelCard key={i} hotel={h} />)}
+                </div>
+              </section>
+            )}
+
+            {/* Transport */}
+            {transportation.length > 0 && (
+              <section>
+                <p className="mono-sm" style={{ marginBottom: 16 }}>Routes</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {transportation.map((r, i) => <TransportCard key={i} route={r} />)}
+                </div>
+              </section>
+            )}
+          </div>
+
+          {/* RIGHT: Budget */}
+          <div style={{
+            position: 'sticky', top: 80,
+            background: 'var(--color-surface)',
+            border: '1px solid var(--color-border)',
+            borderRadius: 8,
+            padding: 24,
+          }}>
+            <BudgetBreakdown breakdown={budget_breakdown} userBudget={trip.budget} />
+          </div>
+        </div>
+      ) : (
+        /* ── Map layout ── */
+        <div>
+          {saveState !== 'saved' ? (
+            <div style={{
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
+              borderRadius: 8,
+              padding: '60px 24px',
+              textAlign: 'center',
+              animation: 'fade-in 300ms ease-out',
+              maxWidth: 580,
+              margin: '20px auto'
+            }}>
+              <div style={{ fontSize: 48, marginBottom: 16 }}>🗺️</div>
+              <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: 'var(--color-text)' }}>
+                Unlock Interactive Maps & Walking Trails
+              </h3>
+              <p style={{ fontSize: 14, color: 'var(--color-text-secondary)', marginBottom: 24, lineHeight: 1.6 }}>
+                Save this journey to geocode daily sights, order attractions using route optimization, and see step-by-step walking directions.
+              </p>
+              <button onClick={handleSave} className="btn-primary" disabled={saveState === 'saving'}>
+                {saveState === 'saving' ? 'Saving Journey…' : 'Save Journey Now'}
+              </button>
+            </div>
+          ) : mapLoading ? (
+            <div style={{ padding: '100px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{
+                width: 32,
+                height: 32,
+                border: '3px solid var(--color-border-hover)',
+                borderTop: '3px solid var(--color-teal)',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite',
+                marginBottom: 16
+              }} />
+              <span style={{ fontSize: 12, color: 'var(--color-text-dim)', fontFamily: 'var(--font-mono)' }}>
+                GEOLOCATING SIGHTS & OPTIMIZING WALKING PATHS...
+              </span>
+              <style>{`
+                @keyframes spin {
+                  to { transform: rotate(360deg); }
+                }
+              `}</style>
+            </div>
+          ) : mapError ? (
+            <div className="alert-error" style={{ margin: '20px 0', padding: 20 }}>
+              <span>⚠️</span>
+              <span>{mapError}</span>
+            </div>
+          ) : mapData ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: isMobile ? '1fr' : '1fr 360px',
+              height: isMobile ? 'auto' : '650px',
+              border: '1px solid var(--color-border)',
+              borderRadius: 8,
+              overflow: 'hidden',
+              background: 'var(--color-bg)',
+              animation: 'fade-in 400ms ease-out'
+            }}>
+              <div style={{ flex: 1, height: isMobile ? '350px' : '100%' }}>
+                <MapContainer
+                  mapData={mapData}
+                  selectedDay={selectedDay}
+                  selectedAttraction={selectedAttraction}
+                  onAttractionSelect={setSelectedAttraction}
+                />
+              </div>
+              <div style={{ width: isMobile ? '100%' : 360, height: isMobile ? '450px' : '100%' }}>
+                <DaySidebar
+                  mapData={mapData}
+                  selectedDay={selectedDay}
+                  onDaySelect={setSelectedDay}
+                  selectedAttraction={selectedAttraction}
+                  onAttractionSelect={setSelectedAttraction}
+                />
+              </div>
+            </div>
+          ) : (
+            <p style={{ color: 'var(--color-text-dim)', fontStyle: 'italic', textAlign: 'center', padding: 40 }}>
+              No map data found.
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

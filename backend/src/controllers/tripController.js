@@ -1,5 +1,7 @@
 const itineraryService = require('../services/itineraryService');
 const budgetService = require('../services/budgetService');
+const mapService = require('../services/mapService');
+const directionsService = require('../services/directionsService');
 const db = require('../database/db');
 
 async function validateBudget(req, res, next) {
@@ -129,8 +131,8 @@ async function saveTrip(req, res, next) {
         
         // Prepare itineraries batch insertion
         const itiQuery = `
-          INSERT INTO itineraries (trip_id, day_number, city, title, morning_activity, afternoon_activity, evening_activity, estimated_cost)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+          INSERT INTO itineraries (trip_id, day_number, city, title, morning_venue, morning_activity, afternoon_venue, afternoon_activity, evening_venue, evening_activity, estimated_cost)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         db.serialize(() => {
@@ -141,16 +143,24 @@ async function saveTrip(req, res, next) {
               day.day,
               day.city,
               day.title || `Day ${day.day}`,
+              day.morning_venue || '',
               day.morning || '',
+              day.afternoon_venue || '',
               day.afternoon || '',
+              day.evening_venue || '',
               day.evening || '',
               day.estimated_cost || 0
             );
           });
-          stmt.finalize((err) => {
+          stmt.finalize(async (err) => {
             if (err) {
               return next(err);
             }
+            
+            // Generate coordinates and routes in the background
+            mapService.generateAndSaveTripMapData(tripId, itinerary)
+              .catch(err => console.error('Error generating map data in background:', err.message));
+
             return res.status(201).json({
               success: true,
               tripId,
@@ -297,10 +307,53 @@ async function getTripDetails(req, res, next) {
   }
 }
 
+async function getTripMapData(req, res, next) {
+  try {
+    const tripId = parseInt(req.params.id);
+    if (isNaN(tripId)) {
+      return res.status(400).json({ error: 'Invalid trip ID' });
+    }
+    const mapData = await mapService.getMapDataForTrip(tripId);
+    if (!mapData) {
+      return res.status(404).json({ error: 'Trip not found' });
+    }
+    return res.status(200).json(mapData);
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function getRouteDirections(req, res, next) {
+  try {
+    const routeId = parseInt(req.params.routeId);
+    if (isNaN(routeId)) {
+      return res.status(400).json({ error: 'Invalid route ID' });
+    }
+    
+    db.get('SELECT route_json FROM routes WHERE id = ?', [routeId], (err, row) => {
+      if (err) return next(err);
+      if (!row || !row.route_json) {
+        return res.status(404).json({ error: 'Route directions not found' });
+      }
+      
+      const directions = directionsService.getTurnsFromRouteJson(row.route_json);
+      if (!directions) {
+        return res.status(500).json({ error: 'Failed to format directions' });
+      }
+      
+      return res.status(200).json(directions);
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   validateBudget,
   generateItinerary,
   saveTrip,
   getSavedTrips,
-  getTripDetails
+  getTripDetails,
+  getTripMapData,
+  getRouteDirections
 };

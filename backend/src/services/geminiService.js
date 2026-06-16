@@ -45,8 +45,11 @@ You MUST return the response strictly as a clean JSON object. Do not include mar
       "day": 1,
       "city": "City Name",
       "title": "Day Title",
+      "morning_venue": "Morning Attraction Name",
       "morning": "Morning activity description...",
+      "afternoon_venue": "Afternoon Attraction Name",
       "afternoon": "Afternoon activity description...",
+      "evening_venue": "Evening Attraction Name",
       "evening": "Evening activity description...",
       "estimated_cost": 5000
     }
@@ -170,8 +173,11 @@ async function generateMockItinerary(tripData) {
             day: d,
             city: searchCity,
             title: d === 1 ? `Arrival in ${searchCity}` : d === duration ? `Farewell ${searchCity}` : `Exploring ${searchCity} Attractions`,
+            morning_venue: morningAttr.name,
             morning: `Visit ${morningAttr.name}. ${morningAttr.description || 'Enjoy sightseeing and taking photos in the morning area.'}`,
+            afternoon_venue: afternoonAttr.name,
             afternoon: `Explore ${afternoonAttr.name}. ${afternoonAttr.description || 'Spend your afternoon experiencing local spots and cultures.'}`,
+            evening_venue: eveningAttr.name,
             evening: `Relax at ${eveningAttr.name}. ${eveningAttr.description || 'Wind down your day with dining and walking around the neighborhood.'}`,
             estimated_cost: dailyCost
           });

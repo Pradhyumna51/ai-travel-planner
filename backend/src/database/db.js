@@ -27,7 +27,59 @@ function initDb() {
     statements.forEach((stmt) => {
       db.run(stmt, (err) => {
         if (err) {
-          console.error('Error running schema statement:', err.message);
+          if (!err.message.includes('already exists') && !err.message.includes('duplicate column')) {
+            console.error('Error running schema statement:', err.message);
+          }
+        }
+      });
+    });
+
+    // Run dynamic migrations for existing tables
+    db.all('PRAGMA table_info(itineraries)', (err, rows) => {
+      if (err) {
+        console.error('Error checking itineraries columns:', err);
+        return;
+      }
+      const columns = (rows || []).map(r => r.name);
+      const itineraryCols = [
+        { name: 'morning_venue', type: 'TEXT' },
+        { name: 'afternoon_venue', type: 'TEXT' },
+        { name: 'evening_venue', type: 'TEXT' },
+        { name: 'start_lat', type: 'REAL' },
+        { name: 'start_lng', type: 'REAL' },
+        { name: 'total_walking_km', type: 'REAL' },
+        { name: 'total_walking_time_min', type: 'INTEGER' },
+        { name: 'attraction_count', type: 'INTEGER' },
+        { name: 'polylines', type: 'TEXT' }
+      ];
+      itineraryCols.forEach(col => {
+        if (!columns.includes(col.name)) {
+          db.run(`ALTER TABLE itineraries ADD COLUMN ${col.name} ${col.type}`, (err) => {
+            if (err) console.error(`Error adding column ${col.name} to itineraries:`, err.message);
+            else console.log(`Added column ${col.name} to itineraries`);
+          });
+        }
+      });
+    });
+
+    db.all('PRAGMA table_info(attractions)', (err, rows) => {
+      if (err) {
+        console.error('Error checking attractions columns:', err);
+        return;
+      }
+      const columns = (rows || []).map(r => r.name);
+      const attractionCols = [
+        { name: 'address', type: 'TEXT' },
+        { name: 'rating', type: 'REAL' },
+        { name: 'review_count', type: 'INTEGER' },
+        { name: 'image_url', type: 'TEXT' }
+      ];
+      attractionCols.forEach(col => {
+        if (!columns.includes(col.name)) {
+          db.run(`ALTER TABLE attractions ADD COLUMN ${col.name} ${col.type}`, (err) => {
+            if (err) console.error(`Error adding column ${col.name} to attractions:`, err.message);
+            else console.log(`Added column ${col.name} to attractions`);
+          });
         }
       });
     });
