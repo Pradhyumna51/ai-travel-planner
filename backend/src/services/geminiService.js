@@ -235,18 +235,26 @@ async function generateMockItinerary(tripData) {
   });
 }
 
-async function estimateBudgetWithAI(destination) {
+async function estimateBudgetWithAI(destination, travelers, durationDays, startDate, endDate) {
   if (!hasValidKey) {
     return null;
   }
   const prompt = `
-You are a travel budget expert. Estimate the average travel costs for: "${destination}" in Indian Rupees (INR).
-We need average estimates per day/night for standard comfortable travel.
+You are a travel budget expert. Estimate the average travel costs for:
+- Destination: "${destination}"
+- Travelers: ${travelers}
+- Duration: ${durationDays} days
+- Date range: ${startDate || 'N/A'} to ${endDate || 'N/A'}
+
+Consider the season/time of year (e.g. peak vs off-peak season for this destination), current real-world travel trends, flight/train fares, hotel rates, and daily food/activities costs.
+We need realistic estimates in Indian Rupees (INR) for standard comfortable travel.
+
 You MUST return the response strictly as a clean JSON object. Do not include markdown code block formatting (like \`\`\`json). The JSON must match this structure exactly:
 {
-  "hotel": 3000,
-  "food": 1500,
-  "activities": 1500
+  "hotel": 3000,          // Average nightly rate for 1 double room (or rooms needed for ${travelers} travelers)
+  "food": 1500,           // Daily food cost per person
+  "activities": 1500,     // Daily activities/sightseeing cost per person
+  "transport": 10000      // Total transport cost (flights/trains/local cabs) for ALL ${travelers} travelers for the entire trip duration
 }
 `;
   try {

@@ -9,12 +9,14 @@ const apiClient = axios.create({
   }
 });
 
-export const validateBudget = async (destination, durationDays, travelers, budget) => {
+export const validateBudget = async (destination, durationDays, travelers, budget, startDate, endDate) => {
   const response = await apiClient.post('/trips/validate-budget', {
     destination,
     duration_days: durationDays,
     travelers,
-    budget
+    budget,
+    start_date: startDate,
+    end_date: endDate
   });
   return response.data;
 };

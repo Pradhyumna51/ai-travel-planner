@@ -30,7 +30,7 @@ async function validateBudget(req, res, next) {
       return res.status(400).json({ error: 'Valid trip duration is required' });
     }
 
-    const estimate = await budgetService.estimateBudget(destination, duration, parseInt(travelers));
+    const estimate = await budgetService.estimateBudget(destination, duration, parseInt(travelers), start_date, end_date);
     const isBudgetValid = budget >= estimate.low;
 
     let message = 'Your budget is sufficient for this trip.';

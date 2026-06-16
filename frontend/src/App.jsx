@@ -57,7 +57,7 @@ export default function App() {
     const dur = getDurationDays(formData.start_date, formData.end_date);
     setStep('loading');
     try {
-      const check = await validateBudget(formData.destination, dur, formData.travelers, formData.budget);
+      const check = await validateBudget(formData.destination, dur, formData.travelers, formData.budget, formData.start_date, formData.end_date);
       setValidation(check);
       if (check.isValid) {
         await generateWithTimeout(formData);
