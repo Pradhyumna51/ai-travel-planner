@@ -73,13 +73,10 @@ export default function TripPlanningForm({ onSubmit, isLoading, apiError, onRetr
   const err = f => touched[f] && errors[f];
 
   return (
-    <div style={{
-      maxWidth: 540, margin: '0 auto',
-      background: 'var(--color-surface)',
-      border: '1px solid var(--color-border)',
-      borderTop: '2px solid var(--color-teal)',
-      borderRadius: '0 0 8px 8px',
-      padding: '36px 36px 32px',
+    <div className="glass-card" style={{
+      maxWidth: 580, margin: '0 auto',
+      borderRadius: '12px',
+      padding: '40px 40px 36px',
     }}>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>

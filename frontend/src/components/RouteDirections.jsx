@@ -169,7 +169,7 @@ export default function RouteDirections({ routeId, fromName, toName, originCoord
               textDecoration: 'none',
               color: 'var(--color-bg)'
             }}>
-              🗺️ Google Maps
+              Google Maps ↗
             </a>
           </div>
         </div>

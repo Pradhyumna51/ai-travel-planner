@@ -6,3 +6,6 @@ dist/
 *.log
 .agents/
 skills-lock.json
+AGENT_PROMPT_V2.md
+DEVELOPMENT_SPEC_V2.md
+claude-fable-5.md

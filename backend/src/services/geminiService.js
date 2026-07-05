@@ -18,6 +18,8 @@ async function generateItineraryWithAI(tripData) {
   const prompt = `
 You are an expert travel planner. Generate a detailed, day-by-day travel itinerary.
 
+CRITICAL: Do NOT include any emojis, icons, or pictorial characters (such as ✈️, 🏨, 🗺️, 📍, 🗂️, etc.) anywhere in the JSON response (including titles, descriptions, names, etc.). Use clean, professional text only.
+
 Trip Details:
 - Origin: ${tripData.origin}
 - Destination: ${tripData.destination}

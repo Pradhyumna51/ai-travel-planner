@@ -69,40 +69,34 @@ export default function SavedJourneys({ onSelect }) {
             const endStr = new Date(trip.end_date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
 
             return (
-              <div key={trip.id} style={{
-                background: 'var(--color-surface)',
-                border: '1px solid var(--color-border)',
-                borderRadius: 8,
-                padding: '24px 28px',
+              <div key={trip.id} className="glass-card" style={{
+                borderRadius: 12,
+                padding: '28px 32px',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 gap: 20,
-                transition: 'border-color 200ms',
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--color-border-hover)'}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = 'var(--color-border)'}
-              >
+              }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
-                    <span className="mono-sm" style={{ fontSize: 10, background: 'var(--color-surface-raised)', padding: '2px 6px', borderRadius: 3 }}>
-                      ID: {trip.id}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', marginBottom: 12 }}>
+                    <span className="mono-sm" style={{ fontSize: 9, background: 'var(--color-teal-dim)', color: 'var(--color-teal)', padding: '3px 8px', borderRadius: 4, fontWeight: 700 }}>
+                      TRIP ID: {trip.id}
                     </span>
                     <span style={{ color: 'var(--color-text-dim)', fontSize: 12, fontFamily: 'var(--font-mono)' }}>
-                      {startStr} – {endStr}
+                      📅 {startStr} – {endStr}
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: 18, fontWeight: 700, margin: '0 0 10px', color: 'var(--color-text)' }}>
-                    {trip.origin?.toUpperCase()} → {trip.destination?.toUpperCase()}
+                  <h3 style={{ fontSize: 20, fontWeight: 700, margin: '0 0 12px', color: 'var(--color-text)', letterSpacing: '-0.3px' }}>
+                    {trip.origin?.toUpperCase()} <span style={{ color: 'var(--color-teal)' }}>→</span> {trip.destination?.toUpperCase()}
                   </h3>
 
-                  <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--color-text-secondary)', marginBottom: 12 }}>
-                    <span>{trip.duration_days} days</span>
+                  <div style={{ display: 'flex', gap: 16, fontSize: 13, color: 'var(--color-text-secondary)', marginBottom: 16 }}>
+                    <span>⚡ {trip.duration_days} days</span>
                     <span>·</span>
-                    <span>{trip.travelers} traveler{trip.travelers > 1 ? 's' : ''}</span>
+                    <span>👥 {trip.travelers} traveler{trip.travelers > 1 ? 's' : ''}</span>
                     <span>·</span>
-                    <span style={{ color: 'var(--color-teal)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
+                    <span style={{ color: 'var(--color-amber)', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
                       ₹{trip.budget?.toLocaleString('en-IN')}
                     </span>
                   </div>
@@ -110,13 +104,13 @@ export default function SavedJourneys({ onSelect }) {
                   {trip.interests?.length > 0 && (
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                       {trip.interests.map(i => (
-                        <span key={i} className="badge badge-teal" style={{ fontSize: 10 }}>{i}</span>
+                        <span key={i} className="badge badge-teal" style={{ fontSize: 10, padding: '3px 8px', borderRadius: 4 }}>{i}</span>
                       ))}
                     </div>
                   )}
                 </div>
 
-                <button onClick={() => onSelect(trip.id)} className="btn-primary" style={{ flexShrink: 0, padding: '10px 18px', fontSize: 13 }}>
+                  <button onClick={() => onSelect(trip.id)} className="btn-primary" style={{ flexShrink: 0, padding: '12px 24px', fontSize: 13, borderRadius: 8 }}>
                   View Itinerary →
                 </button>
               </div>

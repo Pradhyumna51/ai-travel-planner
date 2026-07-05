@@ -405,7 +405,7 @@ export default function ItineraryResults({ results, onReset }) {
             transition: 'all 200ms ease'
           }}
         >
-          🗂️ TIMELINE DETAILS
+          TIMELINE DETAILS
         </button>
         <button 
           onClick={() => setActiveTab('map')}
@@ -422,7 +422,7 @@ export default function ItineraryResults({ results, onReset }) {
             transition: 'all 200ms ease'
           }}
         >
-          🗺️ INTERACTIVE MAPS
+          INTERACTIVE MAPS
         </button>
       </div>
 
@@ -489,25 +489,41 @@ export default function ItineraryResults({ results, onReset }) {
         /* ── Map layout ── */
         <div>
           {saveState !== 'saved' ? (
-            <div style={{
-              background: 'var(--color-surface)',
-              border: '1px solid var(--color-border)',
-              borderRadius: 8,
-              padding: '60px 24px',
+            <div className="glass-card" style={{
+              padding: '60px 40px',
               textAlign: 'center',
               animation: 'fade-in 300ms ease-out',
               maxWidth: 580,
-              margin: '20px auto'
+              margin: '30px auto',
+              borderRadius: 12,
+              border: '1px solid rgba(45, 212, 191, 0.3)',
+              boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37), var(--shadow-glow)'
             }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>🗺️</div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: 'var(--color-text)' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
+                <div style={{
+                  background: 'var(--color-teal-dim)',
+                  borderRadius: '50%',
+                  padding: 16,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 0 15px var(--color-teal-dim)'
+                }}>
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-teal)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21" />
+                    <line x1="9" y1="3" x2="9" y2="18" />
+                    <line x1="15" y1="6" x2="15" y2="21" />
+                  </svg>
+                </div>
+              </div>
+              <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12, color: 'var(--color-text)', fontFamily: 'var(--font-sans)', letterSpacing: '-0.3px' }}>
                 Unlock Interactive Maps & Walking Trails
               </h3>
-              <p style={{ fontSize: 14, color: 'var(--color-text-secondary)', marginBottom: 24, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 13.5, color: 'var(--color-text-secondary)', marginBottom: 28, lineHeight: 1.6 }}>
                 Save this journey to geocode daily sights, order attractions using route optimization, and see step-by-step walking directions.
               </p>
-              <button onClick={handleSave} className="btn-primary" disabled={saveState === 'saving'}>
-                {saveState === 'saving' ? 'Saving Journey…' : 'Save Journey Now'}
+              <button onClick={handleSave} className="btn-primary" disabled={saveState === 'saving'} style={{ padding: '12px 32px', fontSize: 14 }}>
+                {saveState === 'saving' ? 'Saving Journey…' : '✓ Save Journey to Unlock'}
               </button>
             </div>
           ) : mapLoading ? (
