@@ -1,6 +1,17 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const getApiUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  // Automatically fallback to hosting device's IP (e.g. for phone access on network)
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return `http://${window.location.hostname}:5000/api`;
+  }
+  return 'http://localhost:5000/api';
+};
+
+const API_URL = getApiUrl();
 
 const apiClient = axios.create({
   baseURL: API_URL,
@@ -39,6 +50,11 @@ export const getSavedTrips = async () => {
 
 export const getTripDetails = async (id) => {
   const response = await apiClient.get(`/trips/${id}`);
+  return response.data;
+};
+
+export const getMapData = async (id) => {
+  const response = await apiClient.get(`/trips/${id}/map-data`);
   return response.data;
 };
 

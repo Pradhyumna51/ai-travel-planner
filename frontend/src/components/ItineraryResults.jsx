@@ -3,7 +3,7 @@ import axios from 'axios';
 import BudgetBreakdown from './BudgetBreakdown';
 import MapContainer from './MapContainer';
 import DaySidebar from './DaySidebar';
-import { saveTrip } from '../services/api';
+import { saveTrip, getMapData } from '../services/api';
 
 /* ── helpers ──────────────────────────────── */
 function groupDaysByCity(itinerary = []) {
@@ -260,9 +260,9 @@ export default function ItineraryResults({ results, onReset }) {
       const idToFetch = savedTripId || trip.id;
       setMapLoading(true);
       setMapError('');
-      axios.get(`http://localhost:5000/api/trips/${idToFetch}/map-data`)
-        .then(res => {
-          setMapData(res.data);
+      getMapData(idToFetch)
+        .then(data => {
+          setMapData(data);
           setMapLoading(false);
         })
         .catch(err => {
