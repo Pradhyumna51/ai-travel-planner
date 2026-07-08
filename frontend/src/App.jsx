@@ -15,7 +15,13 @@ function getDurationDays(s, e) {
 function friendlyError(err) {
   if (!err.response) return 'Cannot reach the server. Check your connection.';
   const s = err.response.status;
-  const m = err.response?.data?.error || '';
+  const errorData = err.response?.data?.error;
+  let m = '';
+  if (typeof errorData === 'object' && errorData !== null) {
+    m = errorData.message || JSON.stringify(errorData);
+  } else {
+    m = errorData || '';
+  }
   if (s === 400) return m || 'Some details look off. Review the form.';
   if (s === 429) return 'API rate limited. Try again in a moment.';
   if (s === 500) return 'Something broke on our end. Please retry.';
