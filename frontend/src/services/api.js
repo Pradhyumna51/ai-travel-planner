@@ -1,8 +1,13 @@
 import axios from 'axios';
 
 const getApiUrl = () => {
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
+  let url = import.meta.env.VITE_API_URL;
+  if (url) {
+    // If VITE_API_URL doesn't end with /api or /api/, automatically append it
+    if (!url.endsWith('/api') && !url.endsWith('/api/')) {
+      url = url.replace(/\/$/, '') + '/api';
+    }
+    return url;
   }
   // Automatically fallback to hosting device's IP (e.g. for phone access on network)
   if (typeof window !== 'undefined') {
