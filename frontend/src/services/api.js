@@ -5,8 +5,12 @@ const getApiUrl = () => {
     return import.meta.env.VITE_API_URL;
   }
   // Automatically fallback to hosting device's IP (e.g. for phone access on network)
-  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-    return `http://${window.location.hostname}:5000/api`;
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    const isLocalIp = host.startsWith('192.168.') || host.startsWith('10.') || host.startsWith('172.') || host.endsWith('.local');
+    if (isLocalIp) {
+      return `http://${host}:5000/api`;
+    }
   }
   return 'http://localhost:5000/api';
 };
