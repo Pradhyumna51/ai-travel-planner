@@ -1,4 +1,5 @@
 import React from 'react';
+import { Badge } from "@/components/ui/badge";
 
 const CATS = {
   flights:     { label: 'Flights',          color: '#60a5fa' },
@@ -94,14 +95,17 @@ export default function BudgetBreakdown({ breakdown, userBudget }) {
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           boxShadow: remaining >= 0 ? '0 0 10px rgba(52, 211, 153, 0.05)' : '0 0 10px rgba(248, 113, 113, 0.05)',
         }}>
-          <span style={{
-            fontSize: 12, fontFamily: 'var(--font-mono)',
-            color: remaining >= 0 ? 'var(--color-success)' : 'var(--color-danger)',
-            textTransform: 'uppercase', letterSpacing: '0.8px',
-            fontWeight: 600,
-          }}>
+          <Badge
+            variant={remaining >= 0 ? "default" : "destructive"}
+            className="text-[10px] font-mono tracking-wider uppercase font-semibold h-5"
+            style={remaining >= 0 ? {
+              background: "rgba(52, 211, 153, 0.15)",
+              color: "#34d399",
+              border: "1px solid rgba(52, 211, 153, 0.25)"
+            } : undefined}
+          >
             {remaining >= 0 ? 'Remaining' : 'Over budget'}
-          </span>
+          </Badge>
           <span className="mono-cost" style={{
             fontSize: 14,
             fontWeight: 700,

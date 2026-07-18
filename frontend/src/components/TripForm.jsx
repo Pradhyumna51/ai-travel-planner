@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const INTERESTS = [
   'Food', 'Photography', 'Trekking', 'Nature', 'Anime',
@@ -73,143 +75,144 @@ export default function TripPlanningForm({ onSubmit, isLoading, apiError, onRetr
   const err = f => touched[f] && errors[f];
 
   return (
-    <div className="glass-card" style={{
-      maxWidth: 580, margin: '0 auto',
-      borderRadius: '20px',
-      padding: '40px 40px 36px',
-    }}>
-      {/* Header */}
-      <div style={{ marginBottom: 28 }}>
-        <p className="mono-sm" style={{ marginBottom: 10 }}>Departure Briefing</p>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--color-text)', fontFamily: 'var(--font-sans)', letterSpacing: '-0.5px' }}>
+    <Card className="glass-card w-full max-w-[580px] mx-auto p-10 pb-9 border-none">
+      <CardHeader className="p-0 mb-7">
+        <CardDescription className="mono-sm mb-2 text-pink-500 uppercase tracking-widest text-[10px]">
+          Departure Briefing
+        </CardDescription>
+        <CardTitle className="text-2xl font-extrabold text-white tracking-tight font-sans">
           Where to next?
-        </h1>
-      </div>
-
-      {/* API Error */}
-      {apiError && (
-        <div className="alert-error" style={{ marginBottom: 20 }} role="alert">
-          <span style={{ flexShrink: 0 }}>!</span>
-          <div style={{ flex: 1 }}>
-            <p style={{ margin: 0, fontWeight: 500 }}>{apiError}</p>
-            {onRetry && (
-              <button onClick={onRetry} style={{
-                marginTop: 6, fontSize: 12, color: 'var(--color-danger)',
-                fontWeight: 600, background: 'none', border: 'none',
-                cursor: 'pointer', padding: 0, textDecoration: 'underline',
-                fontFamily: 'var(--font-mono)',
-              }}>
-                Retry →
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={submit} noValidate>
-        {/* Origin + Destination */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-          <Field id="origin" label="Origin" placeholder="Mumbai, Delhi…"
-            value={form.origin} onChange={onChange} onBlur={onBlur}
-            disabled={isLoading} error={err('origin')} />
-          <Field id="destination" label="Destination" placeholder="Tokyo, Paris…"
-            value={form.destination} onChange={onChange} onBlur={onBlur}
-            disabled={isLoading} error={err('destination')} />
-        </div>
-
-        <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 20px' }} />
-
-        {/* Dates */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-          <Field id="start_date" label="Depart" type="date" min={today}
-            value={form.start_date} onChange={onChange} onBlur={onBlur}
-            disabled={isLoading} error={err('start_date')} />
-          <Field id="end_date" label="Return" type="date" min={form.start_date || today}
-            value={form.end_date} onChange={onChange} onBlur={onBlur}
-            disabled={isLoading} error={err('end_date')} />
-        </div>
-
-        <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 20px' }} />
-
-        {/* Budget + Travelers */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
-          <Field id="budget" label="Budget (₹)" type="number" min="1000"
-            placeholder="250000" value={form.budget} onChange={onChange}
-            onBlur={onBlur} disabled={isLoading} error={err('budget')}
-            hint="~30% hotels · 20% food" />
-          <Field id="travelers" label="Travelers" type="number" min="1" max="20"
-            value={form.travelers} onChange={onChange} onBlur={onBlur}
-            disabled={isLoading} error={err('travelers')} />
-        </div>
-
-        <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 24px' }} />
-
-        {/* Travel Style */}
-        <div style={{ marginBottom: 24 }}>
-          <label className="field-label">Travel Style</label>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 4 }}>
-            {['budget', 'standard', 'luxury'].map(style => {
-              const isSelected = form.travel_style === style;
-              return (
-                <button
-                  key={style}
-                  type="button"
-                  onClick={() => setForm(p => ({ ...p, travel_style: style }))}
-                  disabled={isLoading}
-                  style={{
-                    padding: '10px 14px',
-                    borderRadius: 8,
-                    fontSize: 13,
-                    fontWeight: 600,
-                    textTransform: 'capitalize',
-                    border: isSelected ? '1px solid var(--color-teal)' : '1px solid var(--color-border)',
-                    background: isSelected ? 'linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(167,139,250,0.15) 100%)' : 'rgba(255,255,255,0.02)',
-                    color: isSelected ? '#ffffff' : 'var(--color-text-secondary)',
-                    boxShadow: isSelected ? '0 0 12px rgba(236,72,153,0.15)' : 'none',
-                    cursor: 'pointer',
-                    transition: 'all 250ms cubic-bezier(0.16, 1, 0.3, 1)'
-                  }}
-                >
-                  {style}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-0">
+        {/* API Error */}
+        {apiError && (
+          <div className="alert-error" style={{ marginBottom: 20 }} role="alert">
+            <span style={{ flexShrink: 0 }}>!</span>
+            <div style={{ flex: 1 }}>
+              <p style={{ margin: 0, fontWeight: 500 }}>{apiError}</p>
+              {onRetry && (
+                <button onClick={onRetry} style={{
+                  marginTop: 6, fontSize: 12, color: 'var(--color-danger)',
+                  fontWeight: 600, background: 'none', border: 'none',
+                  cursor: 'pointer', padding: 0, textDecoration: 'underline',
+                  fontFamily: 'var(--font-mono)',
+                }}>
+                  Retry →
                 </button>
-              );
-            })}
+              )}
+            </div>
           </div>
-        </div>
-
-        <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 24px' }} />
-
-        {/* Interests */}
-        <div style={{ marginBottom: 28 }}>
-          <label className="field-label">Interests</label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>
-            {INTERESTS.map(v => (
-              <button key={v} type="button" onClick={() => toggle(v)}
-                disabled={isLoading}
-                className={`interest-tag${form.interests.includes(v) ? ' selected' : ''}`}
-                aria-pressed={form.interests.includes(v)}>
-                {v}
-              </button>
-            ))}
+        )}
+ 
+        <form onSubmit={submit} noValidate>
+          {/* Origin + Destination */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+            <Field id="origin" label="Origin" placeholder="Mumbai, Delhi…"
+              value={form.origin} onChange={onChange} onBlur={onBlur}
+              disabled={isLoading} error={err('origin')} />
+            <Field id="destination" label="Destination" placeholder="Tokyo, Paris…"
+              value={form.destination} onChange={onChange} onBlur={onBlur}
+              disabled={isLoading} error={err('destination')} />
           </div>
-          {err('interests') && <p className="field-error">{errors.interests}</p>}
-        </div>
-
-        {/* Submit */}
-        <button type="submit" disabled={!isValid || isLoading}
-          className="btn-primary"
-          style={{ width: '100%', padding: '13px 28px', fontSize: 15, fontWeight: 600 }}>
-          {isLoading ? 'Assembling…' : 'Assemble Journey'}
-        </button>
-
-        <p style={{
-          textAlign: 'center', marginTop: 16, fontSize: 11,
-          color: 'var(--color-text-dim)', fontFamily: 'var(--font-mono)',
-        }}>
-          Your data stays in this session. Nothing stored.
-        </p>
-      </form>
-    </div>
+ 
+          <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 20px' }} />
+ 
+          {/* Dates */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
+            <Field id="start_date" label="Depart" type="date" min={today}
+              value={form.start_date} onChange={onChange} onBlur={onBlur}
+              disabled={isLoading} error={err('start_date')} />
+            <Field id="end_date" label="Return" type="date" min={form.start_date || today}
+              value={form.end_date} onChange={onChange} onBlur={onBlur}
+              disabled={isLoading} error={err('end_date')} />
+          </div>
+ 
+          <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 20px' }} />
+ 
+          {/* Budget + Travelers */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 }}>
+            <Field id="budget" label="Budget (₹)" type="number" min="1000"
+              placeholder="250000" value={form.budget} onChange={onChange}
+              onBlur={onBlur} disabled={isLoading} error={err('budget')}
+              hint="~30% hotels · 20% food" />
+            <Field id="travelers" label="Travelers" type="number" min="1" max="20"
+              value={form.travelers} onChange={onChange} onBlur={onBlur}
+              disabled={isLoading} error={err('travelers')} />
+          </div>
+ 
+          <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 24px' }} />
+ 
+          {/* Travel Style */}
+          <div style={{ marginBottom: 24 }}>
+            <label className="field-label">Travel Style</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginTop: 4 }}>
+              {['budget', 'standard', 'luxury'].map(style => {
+                const isSelected = form.travel_style === style;
+                return (
+                  <button
+                    key={style}
+                    type="button"
+                    onClick={() => setForm(p => ({ ...p, travel_style: style }))}
+                    disabled={isLoading}
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: 8,
+                      fontSize: 13,
+                      fontWeight: 600,
+                      textTransform: 'capitalize',
+                      border: isSelected ? '1px solid var(--color-teal)' : '1px solid var(--color-border)',
+                      background: isSelected ? 'linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(167,139,250,0.15) 100%)' : 'rgba(255,255,255,0.02)',
+                      color: isSelected ? '#ffffff' : 'var(--color-text-secondary)',
+                      boxShadow: isSelected ? '0 0 12px rgba(236,72,153,0.15)' : 'none',
+                      cursor: 'pointer',
+                      transition: 'all 250ms cubic-bezier(0.16, 1, 0.3, 1)'
+                    }}
+                  >
+                    {style}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+ 
+          <div style={{ borderTop: '1px solid var(--color-border)', margin: '0 0 24px' }} />
+ 
+          {/* Interests */}
+          <div style={{ marginBottom: 28 }}>
+            <label className="field-label">Interests</label>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 6 }}>
+              {INTERESTS.map(v => (
+                <Badge
+                  key={v}
+                  variant={form.interests.includes(v) ? "default" : "outline"}
+                  className="cursor-pointer font-sans px-3 py-1.5 h-auto rounded-lg text-xs font-semibold select-none transition-all hover:bg-pink-500/10 hover:border-pink-500/40"
+                  onClick={() => toggle(v)}
+                  render={<button type="button" disabled={isLoading} />}
+                >
+                  {v}
+                </Badge>
+              ))}
+            </div>
+            {err('interests') && <p className="field-error">{errors.interests}</p>}
+          </div>
+ 
+          {/* Submit */}
+          <button type="submit" disabled={!isValid || isLoading}
+            className="btn-primary"
+            style={{ width: '100%', padding: '13px 28px', fontSize: 15, fontWeight: 600 }}>
+            {isLoading ? 'Assembling…' : 'Assemble Journey'}
+          </button>
+ 
+          <p style={{
+            textAlign: 'center', marginTop: 16, fontSize: 11,
+            color: 'var(--color-text-dim)', fontFamily: 'var(--font-mono)',
+          }}>
+            Your data stays in this session. Nothing stored.
+          </p>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
 

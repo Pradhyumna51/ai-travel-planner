@@ -1,4 +1,6 @@
 import React from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Slider } from "@/components/ui/slider";
 
 export default function BudgetValidatorModal({
   isOpen, userBudget, estimatedBudget, message, recommendation,
@@ -12,33 +14,17 @@ export default function BudgetValidatorModal({
   const userPct = Math.min(100, Math.max(0, ((userBudget - low * 0.5) / range) * 100));
 
   return (
-    <div role="dialog" aria-modal="true" aria-labelledby="budget-title" style={{
-      position: 'fixed', inset: 0, zIndex: 999,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      padding: 16,
-    }}>
-      {/* Backdrop */}
-      <div onClick={onAdjust} style={{
-        position: 'absolute', inset: 0,
-        background: 'rgba(0,0,0,0.7)',
-        backdropFilter: 'blur(4px)',
-        animation: 'fade-in 200ms ease-out',
-      }} />
-
-      {/* Modal */}
-      <div className="glass-card" style={{
-        position: 'relative', zIndex: 1,
-        width: '100%', maxWidth: 420,
-        borderRadius: 20,
-        padding: 32,
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.35)',
-        animation: 'slide-up 250ms ease-out',
-      }}>
+    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) onAdjust(); }}>
+      <DialogContent className="glass-card max-w-[420px] p-8 border border-white/8 shadow-2xl rounded-2xl" showCloseButton={false}>
         {/* Header */}
-        <p className="mono-sm" style={{ color: 'var(--color-amber)', marginBottom: 16 }}>
-          Budget Clearance
-        </p>
+        <DialogHeader className="p-0 mb-4">
+          <DialogTitle id="budget-title" className="mono-sm text-amber-500 uppercase tracking-widest text-[10px] font-mono">
+            Budget Clearance
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Validate if the travel budget matches the estimated costs.
+          </DialogDescription>
+        </DialogHeader>
 
         <p style={{
           fontSize: 15, color: 'var(--color-text)', margin: '0 0 20px', lineHeight: 1.6,
@@ -58,19 +44,11 @@ export default function BudgetValidatorModal({
             <span>Comfortable</span>
           </div>
 
-          <div style={{
-            height: 8, borderRadius: 4, overflow: 'hidden',
-            background: 'linear-gradient(90deg, #f87171 0%, #f59e0b 50%, #34d399 100%)',
-            position: 'relative',
-          }}>
-            <div style={{
-              position: 'absolute', left: `${userPct}%`,
-              top: -2, bottom: -2, width: 2,
-              background: '#ffffff', borderRadius: 1,
-              transform: 'translateX(-50%)',
-              boxShadow: '0 0 6px rgba(255,255,255,0.4)',
-            }} />
-          </div>
+          <Slider
+            value={[userPct]}
+            disabled={true}
+            className="w-full"
+          />
 
           <div style={{
             display: 'flex', justifyContent: 'space-between',
@@ -105,7 +83,7 @@ export default function BudgetValidatorModal({
             Continue Anyway
           </button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
