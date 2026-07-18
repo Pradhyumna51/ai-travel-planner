@@ -110,27 +110,37 @@ export default function App() {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--color-bg)' }}>
+    <div style={{ minHeight: '100vh', position: 'relative' }}>
+      {/* Aurora Background */}
+      <div className="aurora-bg no-print">
+        <div className="aurora-blob aurora-blob-1"></div>
+        <div className="aurora-blob aurora-blob-2"></div>
+        <div className="aurora-blob aurora-blob-3"></div>
+        <div className="aurora-blob aurora-blob-4"></div>
+      </div>
+
       {/* ── Nav ── */}
       <header className="no-print" style={{
-        background: 'var(--color-surface)',
+        background: 'rgba(15, 12, 30, 0.65)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
         borderBottom: '1px solid var(--color-border)',
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{
           maxWidth: 1200, margin: '0 auto', padding: '0 24px',
-          height: 52, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 0 }}>
             <span style={{
-              fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 700,
-              color: 'var(--color-text)', letterSpacing: '2px',
+              fontFamily: 'var(--font-sans)', fontSize: 18, fontWeight: 800,
+              color: 'var(--color-text)', letterSpacing: '1px',
             }}>
               ROAM
             </span>
             <span style={{
-              display: 'inline-block', width: 5, height: 5, borderRadius: '50%',
-              background: 'var(--color-teal)', marginLeft: 2, marginBottom: 1,
+              display: 'inline-block', width: 6, height: 6, borderRadius: '50%',
+              background: 'var(--color-teal)', marginLeft: 2, marginBottom: 2,
             }} />
           </div>
 

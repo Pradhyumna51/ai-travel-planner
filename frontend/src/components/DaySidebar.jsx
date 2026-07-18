@@ -53,11 +53,10 @@ export default function DaySidebar({ mapData, selectedDay, onDaySelect, selected
   };
 
   return (
-    <div style={{
+    <div className="glass" style={{
       display: 'flex',
       flexDirection: 'column',
       height: '100%',
-      background: 'var(--color-surface)',
       borderLeft: '1px solid var(--color-border)',
       color: 'var(--color-text)'
     }}>
@@ -123,8 +122,8 @@ export default function DaySidebar({ mapData, selectedDay, onDaySelect, selected
           gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 12,
           padding: 12,
-          background: 'var(--color-bg)',
-          borderRadius: 6,
+          background: 'rgba(255, 255, 255, 0.02)',
+          borderRadius: 8,
           border: '1px solid var(--color-border)',
           fontFamily: 'var(--font-mono)',
           fontSize: 11
@@ -169,7 +168,7 @@ export default function DaySidebar({ mapData, selectedDay, onDaySelect, selected
             }}>
               <div style={{
                 background: '#0f172a',
-                color: '#2dd4bf',
+                color: '#ec4899',
                 width: 24,
                 height: 24,
                 borderRadius: '50%',
@@ -177,7 +176,7 @@ export default function DaySidebar({ mapData, selectedDay, onDaySelect, selected
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontSize: 11,
-                boxShadow: '0 0 0 2px #2dd4bf',
+                boxShadow: '0 0 0 2px #ec4899',
                 fontWeight: 'bold',
                 zIndex: 2
               }}>
@@ -367,8 +366,8 @@ export default function DaySidebar({ mapData, selectedDay, onDaySelect, selected
                     }}>
                       {attr.category}
                     </span>
-                    <span style={{ fontSize: 10, color: 'var(--color-text-dim)', fontFamily: 'var(--font-mono)' }}>
-                      ⏱ {attr.duration_minutes}m stay
+                    <span style={{ fontSize: 10, color: 'var(--color-text-dim)', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center' }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 4 }}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> {attr.duration_minutes}m stay
                     </span>
                   </div>
 
@@ -446,7 +445,7 @@ export default function DaySidebar({ mapData, selectedDay, onDaySelect, selected
                       onMouseEnter={(e) => e.target.style.color = 'var(--color-teal)'}
                       onMouseLeave={(e) => e.target.style.color = 'var(--color-text-dim)'}
                     >
-                      👣 Walk {(leg.distance_m / 1000).toFixed(1)} km (~{leg.walking_time_min} mins)
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline-block', verticalAlign: 'middle', marginRight: 2 }}><circle cx="12" cy="5" r="1"/><path d="m9 22 2-6 2-3 2.5 1.5"/><path d="m14 15-2-4-3 1-1.5 3"/></svg> Walk {(leg.distance_m / 1000).toFixed(1)} km (~{leg.walking_time_min} mins)
                       <span style={{ fontSize: 8 }}>{activeRouteDirId === leg.id ? '▴ Hide' : '▾ Directions'}</span>
                     </button>
                   </div>
@@ -481,7 +480,7 @@ export default function DaySidebar({ mapData, selectedDay, onDaySelect, selected
                     }}>
                       <div style={{
                         background: '#0f172a',
-                        color: '#2dd4bf',
+                        color: '#ec4899',
                         width: 24,
                         height: 24,
                         borderRadius: '50%',
@@ -489,11 +488,11 @@ export default function DaySidebar({ mapData, selectedDay, onDaySelect, selected
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: 11,
-                        boxShadow: '0 0 0 2px #2dd4bf',
+                        boxShadow: '0 0 0 2px #ec4899',
                         fontWeight: 'bold',
                         zIndex: 2
                       }}>
-                        🏨
+                        H
                       </div>
                     </div>
                     <div style={{ flex: 1, paddingTop: 2 }}>

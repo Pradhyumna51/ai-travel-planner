@@ -87,21 +87,24 @@ export default function BudgetBreakdown({ breakdown, userBudget }) {
       {/* Remaining */}
       {remaining !== null && (
         <div style={{
-          marginTop: 12, padding: '10px 12px',
-          background: remaining >= 0 ? 'rgba(52,211,153,0.08)' : 'rgba(248,113,113,0.08)',
-          border: `1px solid ${remaining >= 0 ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)'}`,
-          borderRadius: 6,
+          marginTop: 12, padding: '12px 14px',
+          background: remaining >= 0 ? 'rgba(52, 211, 153, 0.1)' : 'rgba(248, 113, 113, 0.1)',
+          border: `1px solid ${remaining >= 0 ? 'rgba(52, 211, 153, 0.25)' : 'rgba(248, 113, 113, 0.25)'}`,
+          borderRadius: 8,
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          boxShadow: remaining >= 0 ? '0 0 10px rgba(52, 211, 153, 0.05)' : '0 0 10px rgba(248, 113, 113, 0.05)',
         }}>
           <span style={{
             fontSize: 12, fontFamily: 'var(--font-mono)',
             color: remaining >= 0 ? 'var(--color-success)' : 'var(--color-danger)',
-            textTransform: 'uppercase', letterSpacing: '0.5px',
+            textTransform: 'uppercase', letterSpacing: '0.8px',
+            fontWeight: 600,
           }}>
             {remaining >= 0 ? 'Remaining' : 'Over budget'}
           </span>
           <span className="mono-cost" style={{
             fontSize: 14,
+            fontWeight: 700,
             color: remaining >= 0 ? 'var(--color-success)' : 'var(--color-danger)',
           }}>
             {remaining >= 0 ? '+' : ''}₹{Math.abs(remaining).toLocaleString('en-IN')}

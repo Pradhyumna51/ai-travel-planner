@@ -475,11 +475,8 @@ export default function ItineraryResults({ results, onReset }) {
           </div>
 
           {/* RIGHT: Budget */}
-          <div style={{
-            position: 'sticky', top: 80,
-            background: 'var(--color-surface)',
-            border: '1px solid var(--color-border)',
-            borderRadius: 8,
+          <div className="glass-card" style={{
+            position: 'sticky', top: 84,
             padding: 24,
           }}>
             <BudgetBreakdown breakdown={budget_breakdown} userBudget={trip.budget} />
@@ -495,9 +492,9 @@ export default function ItineraryResults({ results, onReset }) {
               animation: 'fade-in 300ms ease-out',
               maxWidth: 580,
               margin: '30px auto',
-              borderRadius: 12,
-              border: '1px solid rgba(45, 212, 191, 0.3)',
-              boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.37), var(--shadow-glow)'
+              borderRadius: 20,
+              border: '1px solid rgba(236, 72, 153, 0.25)',
+              boxShadow: '0 12px 40px 0 rgba(0, 0, 0, 0.4), 0 0 20px rgba(236, 72, 153, 0.08)'
             }}>
               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}>
                 <div style={{
@@ -516,10 +513,10 @@ export default function ItineraryResults({ results, onReset }) {
                   </svg>
                 </div>
               </div>
-              <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12, color: 'var(--color-text)', fontFamily: 'var(--font-sans)', letterSpacing: '-0.3px' }}>
+              <h3 style={{ fontSize: 22, fontWeight: 800, marginBottom: 12, color: 'var(--color-text)', fontFamily: 'var(--font-sans)', letterSpacing: '-0.3px' }}>
                 Unlock Interactive Maps & Walking Trails
               </h3>
-              <p style={{ fontSize: 13.5, color: 'var(--color-text-secondary)', marginBottom: 28, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 14, color: 'var(--color-text-secondary)', marginBottom: 28, lineHeight: 1.6 }}>
                 Save this journey to geocode daily sights, order attractions using route optimization, and see step-by-step walking directions.
               </p>
               <button onClick={handleSave} className="btn-primary" disabled={saveState === 'saving'} style={{ padding: '12px 32px', fontSize: 14 }}>

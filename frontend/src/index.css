@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Rubik:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @font-face {
@@ -9,31 +9,31 @@
 
 @theme {
   /* ── Dark palette ──────────────────────────── */
-  --color-bg:             #0B0F14;
-  --color-surface:        #111827;
-  --color-surface-raised: #1a2332;
-  --color-border:         #1e293b;
-  --color-border-hover:   #334155;
+  --color-bg:             #06050b;
+  --color-surface:        rgba(15, 12, 30, 0.45);
+  --color-surface-raised: rgba(28, 22, 54, 0.6);
+  --color-border:         rgba(244, 114, 182, 0.08);
+  --color-border-hover:   rgba(244, 114, 182, 0.25);
  
-  --color-teal:           #2dd4bf;
-  --color-teal-dim:       rgba(45,212,191,0.15);
-  --color-teal-glow:      rgba(45,212,191,0.08);
-  --color-amber:          #f59e0b;
+  --color-teal:           #ec4899; /* vibrant pink */
+  --color-teal-dim:       rgba(236, 72, 153, 0.15);
+  --color-teal-glow:      rgba(236, 72, 153, 0.08);
+  --color-amber:          #f59e0b; /* amber/gold */
   --color-amber-dim:      rgba(245,158,11,0.1);
-  --color-blue:           #60a5fa;
+  --color-blue:           #38bdf8; /* sky blue */
   --color-success:        #34d399;
   --color-danger:         #f87171;
   --color-danger-dim:     rgba(248,113,113,0.08);
   --color-lavender:       #a78bfa;
   --color-rose:           #f472b6;
  
-  --color-text:           #e2e8f0;
-  --color-text-secondary: #94a3b8;
-  --color-text-dim:       #64748b;
-  --color-text-ghost:     #475569;
+  --color-text:           #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-text-dim:       #94a3b8;
+  --color-text-ghost:     #64748b;
  
   /* ── Typography ────────────────────────────── */
-  --font-sans: 'Rupee', 'DM Sans', system-ui, sans-serif;
+  --font-sans: 'Rupee', 'Outfit', 'Rubik', system-ui, sans-serif;
   --font-mono: 'Rupee', 'Space Mono', monospace;
 
   /* ── Shadows (dark mode) ───────────────────── */
@@ -175,31 +175,32 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 11px 28px;
+    padding: 12px 28px;
     font-size: 14px;
     font-weight: 600;
     font-family: var(--font-sans);
-    color: var(--color-bg);
-    background: var(--color-teal);
+    color: #ffffff;
+    background: linear-gradient(135deg, #be185d 0%, #ec4899 100%);
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: filter 150ms, transform 150ms, box-shadow 150ms;
-    box-shadow: 0 1px 3px rgba(45,212,191,0.2);
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms, filter 150ms;
+    box-shadow: 0 4px 14px rgba(236, 72, 153, 0.25);
   }
   .btn-primary:hover:not(:disabled) {
-    filter: brightness(1.1);
-    box-shadow: 0 4px 16px rgba(45,212,191,0.25);
-    transform: translateY(-1px);
+    filter: brightness(1.08);
+    box-shadow: 0 6px 20px rgba(236, 72, 153, 0.4);
+    transform: translateY(-1.5px) scale(1.015);
   }
   .btn-primary:active:not(:disabled) {
-    transform: scale(0.98);
+    transform: translateY(0) scale(0.985);
   }
   .btn-primary:disabled {
     opacity: 0.35;
     cursor: not-allowed;
     transform: none;
     filter: none;
+    box-shadow: none;
   }
 
   .btn-amber {
@@ -207,63 +208,78 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 10px 24px;
+    padding: 12px 24px;
     font-size: 14px;
     font-weight: 600;
     font-family: var(--font-sans);
-    color: var(--color-bg);
-    background: var(--color-amber);
+    color: #ffffff;
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: filter 150ms, transform 150ms;
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms, filter 150ms;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
   }
-  .btn-amber:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-amber:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1.5px) scale(1.015);
+    box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+  }
+  .btn-amber:active {
+    transform: translateY(0) scale(0.985);
+  }
 
   .btn-ghost {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 14px;
+    padding: 10px 18px;
     font-size: 13px;
     font-weight: 500;
     font-family: var(--font-sans);
     color: var(--color-text-secondary);
-    background: transparent;
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: border-color 150ms, color 150ms, background 150ms;
+    transition: border-color 250ms, color 250ms, background 250ms, transform 250ms;
   }
   .btn-ghost:hover {
     border-color: var(--color-border-hover);
     color: var(--color-text);
-    background: rgba(255,255,255,0.03);
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-1px);
+  }
+  .btn-ghost:active {
+    transform: translateY(0);
   }
 
   /* ── Interest tag ──────────────────────── */
   .interest-tag {
     display: inline-flex;
     align-items: center;
-    padding: 6px 14px;
+    padding: 8px 16px;
     font-size: 13px;
     font-weight: 500;
-    border-radius: 4px;
-    border: 1px solid var(--color-border-hover);
-    background: transparent;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    background: rgba(255, 255, 255, 0.01);
     color: var(--color-text-secondary);
     cursor: pointer;
-    transition: all 150ms;
+    transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
     user-select: none;
   }
   .interest-tag:hover:not(:disabled) {
-    border-color: var(--color-teal);
-    color: var(--color-teal);
+    border-color: rgba(236, 72, 153, 0.4);
+    color: var(--color-text);
+    background: rgba(236, 72, 153, 0.05);
+    transform: translateY(-1px);
   }
   .interest-tag.selected {
     border-color: var(--color-teal);
-    background: var(--color-teal-dim);
-    color: var(--color-teal);
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.2) 0%, rgba(167, 139, 250, 0.15) 100%);
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(236, 72, 153, 0.15);
   }
 
   /* ── Badge ─────────────────────────────── */
@@ -286,47 +302,55 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 16px;
-    background: var(--color-surface);
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--color-border);
-    border-left: 2px solid var(--color-teal);
-    border-radius: 0 6px 6px 0;
+    border-left: 4px solid var(--color-teal);
+    border-radius: 8px;
     cursor: pointer;
-    transition: background 150ms, border-color 150ms;
+    transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
     width: 100%;
     text-align: left;
     font-family: inherit;
   }
   .city-header:hover {
-    background: var(--color-surface-raised);
+    background: rgba(255, 255, 255, 0.05);
     border-color: var(--color-border-hover);
     border-left-color: var(--color-teal);
+    transform: translateX(2px);
   }
 
   /* ── Day card ──────────────────────────── */
   .day-card {
-    background: var(--color-surface);
+    background: rgba(15, 12, 30, 0.3);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 16px;
-    margin: 6px 0;
-    transition: border-color 200ms;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 8px 0;
+    transition: all 250ms ease;
   }
-  .day-card:hover { border-color: var(--color-border-hover); }
+  .day-card:hover {
+    border-color: var(--color-border-hover);
+    background: rgba(15, 12, 30, 0.45);
+  }
 
   /* ── Hotel card ────────────────────────── */
   .hotel-card {
     display: flex;
     gap: 16px;
-    background: var(--color-surface);
+    background: rgba(15, 12, 30, 0.3);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 16px;
-    transition: border-color 200ms, transform 200ms;
+    border-radius: 12px;
+    padding: 18px;
+    transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .hotel-card:hover {
     border-color: var(--color-border-hover);
-    transform: translateY(-1px);
+    background: rgba(15, 12, 30, 0.45);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   }
 
   /* ── Transport segment ─────────────────── */
@@ -334,13 +358,17 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    background: var(--color-surface);
+    background: rgba(15, 12, 30, 0.35);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--color-border);
-    border-radius: 6px;
-    padding: 14px 16px;
-    transition: border-color 200ms;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 250ms ease;
   }
-  .transport-card:hover { border-color: var(--color-border-hover); }
+  .transport-card:hover {
+    border-color: var(--color-border-hover);
+    background: rgba(15, 12, 30, 0.45);
+  }
 
   /* ── Fuel bar (budget) ─────────────────── */
   .fuel-bar-track {
@@ -395,23 +423,105 @@
 
 /* ── Glassmorphism and UI Utilities ── */
 .glass {
-  background: rgba(17, 24, 39, 0.7) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
+  background: rgba(15, 12, 30, 0.7) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
 .glass-card {
-  background: rgba(17, 24, 39, 0.45);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(15, 12, 30, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 16px;
   box-shadow: var(--shadow-md);
-  transition: border-color 200ms, box-shadow 200ms;
+  transition: border-color 300ms, box-shadow 300ms, transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 .glass-card:hover {
-  border-color: var(--color-border-hover);
-  box-shadow: var(--shadow-lg), var(--shadow-glow);
+  border-color: rgba(236, 72, 153, 0.35);
+  box-shadow: 0 16px 48px 0 rgba(236, 72, 153, 0.08), var(--shadow-lg), var(--shadow-glow);
+  transform: translateY(-2px);
+}
+
+/* ── Aurora Background ── */
+.aurora-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -10;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, #0c0919 0%, #06050b 100%);
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(130px);
+  opacity: 0.32;
+  mix-blend-mode: screen;
+  will-change: transform;
+}
+
+.aurora-blob-1 {
+  background: radial-gradient(circle, #be185d 0%, rgba(190, 24, 93, 0) 70%);
+  width: 55vw;
+  height: 55vw;
+  top: -12vw;
+  left: -12vw;
+  animation: drift-1 30s ease-in-out infinite alternate;
+}
+
+.aurora-blob-2 {
+  background: radial-gradient(circle, #8b5cf6 0%, rgba(139, 92, 246, 0) 70%);
+  width: 65vw;
+  height: 65vw;
+  bottom: -18vw;
+  right: -12vw;
+  animation: drift-2 35s ease-in-out infinite alternate;
+}
+
+.aurora-blob-3 {
+  background: radial-gradient(circle, #d97706 0%, rgba(217, 119, 6, 0) 70%);
+  width: 48vw;
+  height: 48vw;
+  top: 18vh;
+  right: 12vw;
+  animation: drift-3 25s ease-in-out infinite alternate;
+}
+
+.aurora-blob-4 {
+  background: radial-gradient(circle, #ec4899 0%, rgba(236, 72, 153, 0) 70%);
+  width: 42vw;
+  height: 42vw;
+  bottom: 8vh;
+  left: 18vw;
+  animation: drift-4 32s ease-in-out infinite alternate;
+}
+
+@keyframes drift-1 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(12vw, 8vh) scale(1.08) rotate(180deg); }
+  100% { transform: translate(-4vw, -4vh) scale(0.92) rotate(360deg); }
+}
+
+@keyframes drift-2 {
+  0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(-8vw, -12vh) scale(0.88) rotate(-120deg); }
+  100% { transform: translate(6vw, 4vh) scale(1.02) rotate(-240deg); }
+}
+
+@keyframes drift-3 {
+  0% { transform: translate(0, 0) scale(0.92); }
+  50% { transform: translate(-10vw, 10vh) scale(1.08); }
+  100% { transform: translate(4vw, -8vh) scale(1); }
+}
+
+@keyframes drift-4 {
+  0% { transform: translate(0, 0) scale(1.02) rotate(0deg); }
+  50% { transform: translate(8vw, -6vh) scale(0.92) rotate(140deg); }
+  100% { transform: translate(-6vw, 10vh) scale(1) rotate(280deg); }
 }
 
 /* ── Leaflet Dark Theme Overrides ── */

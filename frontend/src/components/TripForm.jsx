@@ -75,13 +75,13 @@ export default function TripPlanningForm({ onSubmit, isLoading, apiError, onRetr
   return (
     <div className="glass-card" style={{
       maxWidth: 580, margin: '0 auto',
-      borderRadius: '12px',
+      borderRadius: '20px',
       padding: '40px 40px 36px',
     }}>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
         <p className="mono-sm" style={{ marginBottom: 10 }}>Departure Briefing</p>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: 'var(--color-text)' }}>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--color-text)', fontFamily: 'var(--font-sans)', letterSpacing: '-0.5px' }}>
           Where to next?
         </h1>
       </div>
@@ -157,16 +157,17 @@ export default function TripPlanningForm({ onSubmit, isLoading, apiError, onRetr
                   onClick={() => setForm(p => ({ ...p, travel_style: style }))}
                   disabled={isLoading}
                   style={{
-                    padding: '8px 12px',
-                    borderRadius: 6,
+                    padding: '10px 14px',
+                    borderRadius: 8,
                     fontSize: 13,
                     fontWeight: 600,
                     textTransform: 'capitalize',
-                    border: isSelected ? '1px solid var(--color-teal)' : '1px solid var(--color-border-hover)',
-                    background: isSelected ? 'var(--color-teal-dim)' : 'transparent',
-                    color: isSelected ? 'var(--color-teal)' : 'var(--color-text-secondary)',
+                    border: isSelected ? '1px solid var(--color-teal)' : '1px solid var(--color-border)',
+                    background: isSelected ? 'linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(167,139,250,0.15) 100%)' : 'rgba(255,255,255,0.02)',
+                    color: isSelected ? '#ffffff' : 'var(--color-text-secondary)',
+                    boxShadow: isSelected ? '0 0 12px rgba(236,72,153,0.15)' : 'none',
                     cursor: 'pointer',
-                    transition: 'all 150ms'
+                    transition: 'all 250ms cubic-bezier(0.16, 1, 0.3, 1)'
                   }}
                 >
                   {style}

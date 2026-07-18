@@ -26,15 +26,14 @@ export default function BudgetValidatorModal({
       }} />
 
       {/* Modal */}
-      <div style={{
+      <div className="glass-card" style={{
         position: 'relative', zIndex: 1,
         width: '100%', maxWidth: 420,
-        background: 'var(--color-surface)',
-        border: '1px solid var(--color-border)',
-        borderRadius: 8,
+        borderRadius: 20,
         padding: 32,
-        boxShadow: 'var(--shadow-lg)',
-        animation: 'slide-up 200ms ease-out',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: '0 20px 50px rgba(0, 0, 0, 0.35)',
+        animation: 'slide-up 250ms ease-out',
       }}>
         {/* Header */}
         <p className="mono-sm" style={{ color: 'var(--color-amber)', marginBottom: 16 }}>
@@ -87,10 +86,10 @@ export default function BudgetValidatorModal({
         {recommendation && (
           <div style={{
             padding: '12px 16px',
-            background: 'var(--color-amber-dim)',
-            borderLeft: '3px solid var(--color-amber)',
-            borderRadius: '0 6px 6px 0',
-            fontSize: 13, color: 'var(--color-text-secondary)',
+            background: 'rgba(245, 158, 11, 0.08)',
+            borderLeft: '4px solid var(--color-amber)',
+            borderRadius: '0 8px 8px 0',
+            fontSize: 13.5, color: 'var(--color-text-secondary)',
             marginBottom: 24, lineHeight: 1.5,
           }}>
             {recommendation}

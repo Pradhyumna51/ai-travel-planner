@@ -63,7 +63,7 @@ const hotelIcon = L.divIcon({
   html: `
     <div style="
       background: #0f172a;
-      color: #2dd4bf;
+      color: #ec4899;
       width: 28px;
       height: 28px;
       border-radius: 50%;
@@ -72,10 +72,10 @@ const hotelIcon = L.divIcon({
       justify-content: center;
       font-weight: 700;
       font-size: 12px;
-      box-shadow: 0 0 0 2px #2dd4bf, 0 4px 10px rgba(0,0,0,0.6);
+      box-shadow: 0 0 0 2px #ec4899, 0 4px 10px rgba(0,0,0,0.6);
       border: 1px solid rgba(0,0,0,0.3);
     ">
-      🏨
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: block;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="9" y1="22" x2="9" y2="16"/><line x1="15" y1="22" x2="15" y2="16"/><line x1="9" y1="16" x2="15" y2="16"/><path d="M8 6h3v3H8z"/><path d="M13 6h3v3h-3z"/><path d="M8 11h3v3H8z"/><path d="M13 11h3v3h-3z"/></svg>
     </div>
   `,
   iconSize: [28, 28],
@@ -141,27 +141,27 @@ export default function MapContainer({ mapData, selectedDay, selectedAttraction,
     if (hotelWp) {
       L.marker([hotelWp.lat, hotelWp.lng], { icon: hotelIcon })
         .bindPopup(`
-          <div style="color: #1e293b; font-family: var(--font-sans); min-width: 140px; padding: 4px;">
-            <h4 style="margin: 0 0 4px; font-size: 13px; font-weight: 700; color: #0f172a;">🏨 ${hotelWp.name}</h4>
-            <p style="margin: 0; font-size: 11px; color: #64748b;">Daily base lodging for ${dayData.city}</p>
+          <div style="color: var(--color-text); font-family: var(--font-sans); min-width: 140px; padding: 4px;">
+            <h4 style="margin: 0 0 4px; font-size: 13px; font-weight: 700; color: var(--color-text);">Lodging: ${hotelWp.name}</h4>
+            <p style="margin: 0; font-size: 11px; color: var(--color-text-dim);">Daily base lodging for ${dayData.city}</p>
           </div>
         `)
         .addTo(markersLayerGroup.current);
     }
-
+ 
     // 2. Add Attraction markers
     attractions.forEach((attr, idx) => {
       const markerIcon = createCustomMarkerIcon(attr.category, (idx + 1).toString());
       L.marker([attr.latitude, attr.longitude], { icon: markerIcon })
         .bindPopup(`
-          <div style="color: #1e293b; font-family: var(--font-sans); min-width: 160px; padding: 4px;">
-            <h4 style="margin: 0 0 4px; font-size: 13px; font-weight: 700; color: #0f172a;">${idx + 1}. ${attr.name}</h4>
+          <div style="color: var(--color-text); font-family: var(--font-sans); min-width: 160px; padding: 4px;">
+            <h4 style="margin: 0 0 4px; font-size: 13px; font-weight: 700; color: var(--color-text);">${idx + 1}. ${attr.name}</h4>
             <div style="margin-bottom: 6px;">
-              <span style="font-size: 9px; font-weight: 700; text-transform: uppercase; color: ${categoryColors[attr.category] || '#2dd4bf'}; background: ${categoryColors[attr.category] + '20' || '#2dd4bf20'}; padding: 2px 6px; border-radius: 3px; font-family: var(--font-mono);">
+              <span style="font-size: 9px; font-weight: 700; text-transform: uppercase; color: ${categoryColors[attr.category] || '#ec4899'}; background: ${categoryColors[attr.category] + '20' || '#ec489920'}; padding: 2px 6px; border-radius: 3px; font-family: var(--font-mono);">
                 ${attr.category}
               </span>
             </div>
-            <p style="margin: 0; font-size: 11px; color: #475569; line-height: 1.4;">
+            <p style="margin: 0; font-size: 11px; color: var(--color-text-secondary); line-height: 1.4;">
               <strong>Arrival:</strong> ${attr.arrival_time}<br/>
               <strong>Duration:</strong> ${attr.duration_minutes} mins<br/>
               <strong>From previous:</strong> ${attr.distance_from_previous_m > 0 ? (attr.distance_from_previous_m / 1000).toFixed(1) + ' km' : 'Start'}
@@ -240,7 +240,7 @@ export default function MapContainer({ mapData, selectedDay, selectedAttraction,
         position: 'absolute',
         top: 16,
         left: 16,
-        background: 'rgba(17, 24, 39, 0.85)',
+        background: 'rgba(15, 12, 30, 0.85)',
         backdropFilter: 'blur(8px)',
         border: '1px solid var(--color-border)',
         borderRadius: '50%',
