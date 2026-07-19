@@ -356,8 +356,8 @@ export default function ItineraryResults({ results, onReset }) {
         /* ── Two-column layout ── */
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '1fr 340px',
-          gap: 32, alignItems: 'start',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 340px',
+          gap: isMobile ? 24 : 32, alignItems: 'start',
         }}>
           {/* LEFT: Timeline + hotels + transport */}
           <div>
@@ -428,7 +428,7 @@ export default function ItineraryResults({ results, onReset }) {
           </div>
  
           {/* RIGHT: Budget */}
-          <Card className="glass-card border-none sticky top-[84px] p-6">
+          <Card className="glass-card border-none md:sticky md:top-[84px] p-6">
             <BudgetBreakdown breakdown={budget_breakdown} userBudget={trip.budget} />
           </Card>
         </div>
