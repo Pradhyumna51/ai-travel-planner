@@ -403,14 +403,13 @@ export default function ItineraryResults({ results, onReset }) {
         </div>
       )}
   
-      {/* Tab Selector */}
       <Tabs defaultValue="timeline" value={activeTab} onValueChange={setActiveTab} className="w-full no-print mb-8">
         <TabsList className="flex gap-2 border-b border-border bg-transparent p-0 rounded-none h-12">
           <TabsTrigger value="timeline" className="px-6 py-3 text-xs font-mono font-bold tracking-widest uppercase border-b-2 border-transparent data-[state=active]:border-pink-500 data-[state=active]:text-pink-500 rounded-none bg-transparent hover:text-white transition-all">
-            🗂️ TIMELINE DETAILS
+            TIMELINE DETAILS
           </TabsTrigger>
           <TabsTrigger value="map" className="px-6 py-3 text-xs font-mono font-bold tracking-widest uppercase border-b-2 border-transparent data-[state=active]:border-pink-500 data-[state=active]:text-pink-500 rounded-none bg-transparent hover:text-white transition-all">
-            🗺️ INTERACTIVE MAPS
+            INTERACTIVE MAPS
           </TabsTrigger>
         </TabsList>
       </Tabs>

@@ -102,7 +102,7 @@ export default function BudgetBreakdown({ breakdown, userBudget }) {
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
       }}>
         <span className="mono-sm text-slate-300 font-bold" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-          <DollarSign className="size-4 text-slate-400" /> Total Cost
+          Total Cost
         </span>
         <span className="mono-cost text-xl font-extrabold" style={{
           color: 'var(--color-text)',
