@@ -139,29 +139,33 @@
   /* ── Input ─────────────────────────────── */
   .field-input {
     width: 100%;
-    padding: 10px 12px;
-    font-size: 15px;
+    padding: 11px 14px;
+    font-size: 14px;
     font-family: var(--font-sans);
     color: var(--color-text);
-    background: var(--color-bg);
+    background: rgba(15, 12, 30, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid var(--color-border);
-    border-radius: 6px;
+    border-radius: 10px;
     outline: none;
-    transition: border-color 200ms, box-shadow 200ms;
+    transition: border-color 250ms, box-shadow 250ms, background 250ms;
     -webkit-appearance: none;
     appearance: none;
   }
   .field-input::placeholder { color: var(--color-text-ghost); }
   .field-input:focus {
     border-color: var(--color-teal);
-    box-shadow: 0 0 0 2px var(--color-teal-dim);
+    box-shadow: 0 0 0 3px var(--color-teal-dim), 0 0 16px var(--color-teal-glow);
+    background: rgba(15, 12, 30, 0.6);
   }
   .field-input.error {
     border-color: var(--color-danger);
-    box-shadow: 0 0 0 2px var(--color-danger-dim);
+    box-shadow: 0 0 0 3px var(--color-danger-dim);
+    background: rgba(248, 113, 113, 0.04);
   }
   .field-input:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
