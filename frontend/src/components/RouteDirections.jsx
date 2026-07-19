@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getDirections } from '../services/api';
 
 // Helper to match maneuver type to arrow or symbol
 function getManeuverIcon(maneuver) {
@@ -26,9 +26,9 @@ export default function RouteDirections({ routeId, fromName, toName, originCoord
       setLoading(true);
       setError('');
       try {
-        const response = await axios.get(`http://localhost:5000/api/trips/routes/${routeId}/directions`);
+        const data = await getDirections(routeId);
         if (active) {
-          setDirections(response.data);
+          setDirections(data);
           setLoading(false);
         }
       } catch (err) {
